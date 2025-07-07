@@ -25,7 +25,7 @@ export default function usePlayerMenu(dorsal: number | undefined) {
     const id = event.id ?? `${event.type}-${minutes}-${seconds}`
     const time = event.time ?? `${minutes} : ${seconds}`
     const newEvent: MatchEvent = { ...event, id, time }
-    setEvents([...events, newEvent])
+    setEvents([newEvent, ...events])
   }
 
   const handleGoal = ({dorsal, side} : {dorsal: number | undefined, side: 'team' | 'opponent'}) => {
@@ -188,8 +188,6 @@ export default function usePlayerMenu(dorsal: number | undefined) {
           card: cardType,
           // Si es tarjeta roja, se asume que el jugador sale del campo
           isPlaying: cardType === 'red' ? false : player.isPlaying,
-          lastStartTime: new Date().toISOString(),
-          playedTime: player.playedTime ? player.playedTime + 1 : 1
         }
       }
       return player

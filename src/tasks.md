@@ -19,11 +19,11 @@
 ---
 
 ## Mejoras visuales y de UX
-- [ ] Mostrar colores distintos para tarjetas **amarilla** y **roja**
+- [X] Mostrar colores distintos para tarjetas **amarilla** y **roja**
 - [X] Visualizar un **cambio** como una línea separadora
 - [X] Mostrar al **portero** separado del resto de jugadores
 - [X] Añadir campo booleano `portero` (`true` o `false`) en los datos de jugador
-- [ ] Añadir opción para **corregir eventos** (editar/eliminar eventos registrados)
+- [X] Añadir opción para **corregir eventos** (editar/eliminar eventos registrados)
 
 ## Gestión de jugadores al crear partido
 - [ ] Permitir elegir jugadores en: **campo**, **banquillo** o **desconvocados** al crear el partido

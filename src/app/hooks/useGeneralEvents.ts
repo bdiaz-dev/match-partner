@@ -23,13 +23,15 @@ export default function useGeneralEvents() {
       time: `${minutes} : ${seconds}`,
       id
     }
-    setEvents([...events, newEvent])
+    setEvents([newEvent, ...events])
   }
   
   const handlers = {
     handleGoal,
     handleOffside: () => { handleGeneralEvents('🚩 Fuera de Juego', 'offside') },
+    handleOffsideOpponent: () => { handleGeneralEvents('🚩 Fuera de Juego Rival', 'offside') },
     handleCorner: () => { handleGeneralEvents('🏳️ Córner', 'corner') },
+    handleCornerOpponent: () => { handleGeneralEvents('🏳️ Córner Rival', 'corner') },
     handleFoul: () => { handleGeneralEvents('🚫 Falta Rival', 'foul') },
     handleOpponentKeeperSave: () => { handleGeneralEvents('🧤 Parada Rival', 'keeperSave') }
   }
