@@ -38,9 +38,9 @@ export default function Match() {
   }
 
   return (
-    <div className='flex flex-col items-center justify-center min-h-screen'>
+    <div className='flex flex-col items-center justify-center min-h-screen min-w-full'>
       <ScoreBoard />
-      <MatchStopwatch />
+      {/* <MatchStopwatch /> */}
       {isStarted ? (
         <>
           <Button className='mt-2 mb-2' onClick={() => archiveMatch()}>

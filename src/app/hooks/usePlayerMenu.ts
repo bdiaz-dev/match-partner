@@ -49,7 +49,7 @@ export default function usePlayerMenu(dorsal: number | undefined) {
         }
       ])
       addEvent({
-        title: '⚽ Gol del rival',
+        title: '⚽ Gol rival',
         type: 'goal',
         id: idForGoal
       })
@@ -71,7 +71,7 @@ export default function usePlayerMenu(dorsal: number | undefined) {
       }
       setGoals([...goals, newGoal])
       addEvent({
-        title: '⚽ Gol del equipo',
+        title: '⚽ Gol equipo',
         type: 'goal',
         playerName: goalPlayer.name,
         playerDorsal: dorsal,
@@ -200,7 +200,7 @@ export default function usePlayerMenu(dorsal: number | undefined) {
     const cardedPlayer = player(dorsal)
     toggleCard(dorsal, cardType)
     addEvent({
-      title: cardType === 'yellow' ? '🟨 Tarjeta Amarilla' : '🟥 Tarjeta Roja',
+      title: cardType === 'yellow' ? '🟨 Tj. Amarilla' : '🟥 Tj. Roja',
       type: cardType === 'yellow' ? 'card' : 'redCard',
       playerName: cardedPlayer?.name || 'Desconocido',
       playerDorsal: dorsal

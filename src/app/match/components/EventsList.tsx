@@ -46,7 +46,7 @@ export default function EventsList() {
         disabled={!hasEvents}
         onClick={() => hasEvents && setIsEditing(!isEditing)}
         className={`${isEditing ? 'bg-red-600' : 'bg-slate-400'} absolute top-2 right-2 text-xs`}
-      >✏</Button>
+      >✍</Button>
       <div className='flex flex-col items-start justify-start w-full min-w-90 min-h-80 max-h-full overflow-y-auto mt-2'>
         {events.length > 0 ? (
           events.map((event, index) => event.type === 'substitution' ? (
@@ -54,14 +54,14 @@ export default function EventsList() {
           ) : (
             <div key={index} className='p-2 border-b border-gray-200 w-full'>
               {isEditing &&
-                <button className='bg-transparent mr-4'
+                <button className='rounded-full mr-2 hover:scale-110 transition-scale duration-100 cursor-pointer'
                   onClick={() => { handleDeleteEvent({ id: event.id, type: event.type }) }}
                 >
                   ❌
                 </button>}
               <span className={`${goalTextStyle(event.type, (!!event.playerName ? 'team' : 'opponent'))} font-semibold`}>{event.title + ': '}</span>
               <span className='text-gray-600'>{event.playerName} {event.playerName ? `(#${event.playerDorsal})` : ''}</span>
-              <span className='text-gray-500 text-sm'>{' - ' + event.time}</span>
+              <span className='text-gray-500 text-sm text-nowrap'>{' - ' + event.time}</span>
             </div>
           ))
         ) : (

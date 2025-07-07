@@ -1,25 +1,42 @@
 import useMatchStore from '../stores/matchStore'
+import MatchStopwatch from './MatchStopwatch'
 
 export default function ScoreBoard() {
   const matchGoals = useMatchStore(state => state.goals)
   const teamName = 'San Lorenzo C.F.'
   const opponentName = 'Boca Juniors'
   const isHome = true // Example value, replace with actual logic
-  
+
   const teamGoals = matchGoals.filter(goal => goal.side === 'team')
   const opponentGoals = matchGoals.filter(goal => goal.side === 'opponent')
-  
-  
+
+  const Goals = (side: 'team' | 'opponent') => {
+    const isTeam = side === 'team'
+    const goals = isTeam ? teamGoals : opponentGoals
+    return (
+      <div className={`${isTeam ? 'bg-green-600' : 'bg-orange-600'} font-bold max-w-fit text-white px-2 py-1 rounded-lg`}>
+        {goals.length}
+      </div>
+    )
+  }
+
   return (
-    <div>
-      <div className='flex flex-row items-center justify-center bg-gray-100 p-4 rounded-lg shadow-md mb-4'>
-        <p className='text-2xl font-semibold'>
-          {isHome ? teamName : opponentName} : ( {isHome ? teamGoals.length : opponentGoals.length} )
-        </p>
-        <span className='mx-4 text-xl font-bold'>VS</span>
-        <p className='text-2xl font-semibold'>
-          ( {!isHome ? teamGoals.length : opponentGoals.length} ) : {!isHome ? teamName : opponentName}
-        </p>
+    <div className='flex flex-col items-center justify-center bg-gray-100 p-4 rounded-lg shadow-md mb-4 min-w-full sticky top-5 z-10'>
+      <MatchStopwatch />
+      <div className='flex flex-row items-center justify-center  min-w-full'>
+        <div className='flex-2 basis-2/5 text-xl font-semibold flex items-center gap-3 justify-end'>
+          <p className='text-center'>
+            {isHome ? teamName : opponentName}
+          </p>
+          {Goals(isHome ? 'team' : 'opponent')}
+        </div>
+        <div className='flex-1 basis-1/6 p-2 rounded-full text-xl font-bold flex justify-center'>VS</div>
+        <div className='flex-2 basis-2/5 text-xl font-semibold flex items-center gap-3 justify-start'>
+          {Goals(isHome ? 'opponent' : 'team')}
+          <p className='text-center'>
+            {!isHome ? teamName : opponentName}
+          </p>
+        </div>
       </div>
     </div>
   )
