@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button"
 import MatchTeam from './components/team/MatchTeam'
 import useMatchStore from './stores/matchStore'
-import MatchStopwatch from './components/MatchStopwatch'
 import useHasHydrated from '../hooks/useHasHydrated'
 import { useReloadOnVisibility } from '../hooks/useReloadOnVisibility'
 // import usePlayerMenu from '../hooks/usePlayerMenu'
