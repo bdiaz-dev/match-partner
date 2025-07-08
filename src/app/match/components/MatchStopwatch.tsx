@@ -63,6 +63,7 @@ export default function MatchStopwatch() {
   // })
 
   if (!hasHydrated || timestamp === undefined) return null
+  
 
   return (
     <div className='flex flex-row items-center justify-center gap-4 w-full mb-2'>
@@ -70,7 +71,7 @@ export default function MatchStopwatch() {
       <BaseStopwatch
         startTimestamp={timestamp}
         isRunning={isStarted && !isPaused}
-        className="text-4xl font-bold text-center text-gray-800"
+        className="text-3xl font-bold text-center text-gray-800"
       />
       <span className='font-bold text-2xl'>---------</span>
     </div>

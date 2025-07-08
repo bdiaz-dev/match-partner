@@ -9,11 +9,15 @@ export default function useMatchStoreSelectors() {
     goals: useMatchStore(state => state.goals),
     setGoals: useMatchStore(state => state.setGoals),
     pausePeriods: useMatchStore(state => state.pausePeriods),
+    setPausePeriods: useMatchStore(state => state.setPausePeriods),
     startTime: useMatchStore(state => state.startTime),
     setStartTime: useMatchStore(state => state.setStartTime),
     isStarted: useMatchStore(state => state.isStarted),
     setIsStarted: useMatchStore(state => state.setIsStarted),
     isPaused: useMatchStore(state => state.isPaused),
     setIsPaused: useMatchStore(state => state.setIsPaused),
+    startPause: useMatchStore(state => state.startPause),
+    endPause: useMatchStore(state => state.endPause),
+    archiveMatch: useMatchStore(state => state.archiveMatch),
   }
 }

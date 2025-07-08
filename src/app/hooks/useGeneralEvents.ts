@@ -10,13 +10,16 @@ export default function useGeneralEvents() {
     startTime,
     pausePeriods,
     events,
-    setEvents
+    setEvents,
+    startPause,
+    // endPause
   } = useMatchStoreSelectors()
+  const now = new Date().toISOString()
 
   const handleGeneralEvents = (title: string, type: MatchEvent['type']) => {
     if (!startTime) return
     const { minutes, seconds } = getElapsedWithPauses(startTime, pausePeriods)
-    const id = `${type}-${minutes}-${seconds}`
+    const id = (type !== 'pause') ? `${type}-${minutes}-${seconds}` : now
     const newEvent: MatchEvent = {
       title,
       type,
@@ -33,7 +36,11 @@ export default function useGeneralEvents() {
     handleCorner: () => { handleGeneralEvents('🏳️ Córner', 'corner') },
     handleCornerOpponent: () => { handleGeneralEvents('🏳️ Córner Rival', 'corner') },
     handleFoul: () => { handleGeneralEvents('🚫 Falta Rival', 'foul') },
-    handleOpponentKeeperSave: () => { handleGeneralEvents('🧤 Parada Rival', 'keeperSave') }
+    handleOpponentKeeperSave: () => { handleGeneralEvents('🧤 Parada Rival', 'keeperSave') },
+    handlePauseMatch: () => {
+      startPause(now)
+      handleGeneralEvents('✋ Pausa del partido excepcional', 'pause')
+    }
   }
 
   return {

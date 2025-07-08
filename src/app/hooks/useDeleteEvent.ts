@@ -4,7 +4,7 @@ import useMatchStoreSelectors from './useMatchStoreSelectors'
 
 export default function useDeleteEvents(setisEditing: (value: boolean) => void) {
 
-  const { events, setEvents, goals, setGoals, matchTeam, setMatchTeam } = useMatchStoreSelectors()
+  const { events, setEvents, goals, setGoals, matchTeam, setMatchTeam, pausePeriods, setPausePeriods } = useMatchStoreSelectors()
 
   const handleDeleteEvent = ({ id, type }: { id: string, type: string }) => {
     const deleteEvent = () => {
@@ -55,6 +55,10 @@ export default function useDeleteEvents(setisEditing: (value: boolean) => void) 
           return player;
         })
         setMatchTeam(updatedTeam)
+      }
+      if (type === 'pause') {
+        const filteredPausePeriods = pausePeriods?.filter((period) => period.id !== id)
+        setPausePeriods(filteredPausePeriods)
       }
       // Actualizar el estado con los eventos filtrados
       setEvents(updatedEvents)

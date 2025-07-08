@@ -29,7 +29,7 @@ export type GoalItem = {
 
 export type MatchEvent = {
   title: string
-  type: 'goal' | 'foul' | 'substitution' | 'other' | 'changeStatus' | 'offside' | 'corner' | 'keeperSave' | 'card' | 'redCard' | 'shot' | 'injury'
+  type: 'goal' | 'foul' | 'substitution' | 'other' | 'changeStatus' | 'offside' | 'corner' | 'keeperSave' | 'card' | 'redCard' | 'shot' | 'injury' | 'pause'
   playerName?: string
   playerDorsal?: number
   playersOnSubstitution?: Array<PlayerForSubstitution>
@@ -53,8 +53,9 @@ interface MatchState {
 
   archiveMatch: () => void
 
-  pausePeriods: Array<{ start: string; end?: string }>
-  startPause: () => void
+  pausePeriods: Array<{ start: string; id: string, end?: string }>
+  setPausePeriods: (pausePeriods: Array<{ start: string; id: string, end?: string }>) => void
+  startPause: (now: string) => void
   endPause: () => void
 }
 
@@ -77,10 +78,13 @@ const useMatchStore = create<MatchState>()(
       setEvents: (events) => set({ events }),
 
       pausePeriods: [],
-      startPause: () => set(state => ({
-        pausePeriods: [...state.pausePeriods, { start: new Date().toISOString() }],
-        isPaused: true
-      })),
+      setPausePeriods: (pausePeriods) => set({ pausePeriods }),
+      startPause: (now) => 
+        // const now = new Date().toISOString()
+        set(state => ({
+          pausePeriods: [...state.pausePeriods, { start: now, id: now }],
+          isPaused: true
+        })),
       endPause: () => set(state => ({
         pausePeriods: state.pausePeriods.map((p, i, arr) =>
           i === arr.length - 1 && !p.end

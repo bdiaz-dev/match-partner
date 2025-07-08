@@ -2,30 +2,41 @@
 
 import { Button } from "@/components/ui/button"
 import MatchTeam from './components/team/MatchTeam'
-import useMatchStore from './stores/matchStore'
+// import useMatchStore from './stores/matchStore'
 import useHasHydrated from '../hooks/useHasHydrated'
 import { useReloadOnVisibility } from '../hooks/useReloadOnVisibility'
 // import usePlayerMenu from '../hooks/usePlayerMenu'
 import ScoreBoard from './components/ScoreBoard'
 import EventsList from './components/EventsList'
 import GeneralEvents from './components/GeneralEvents'
+import useMatchStoreSelectors from '../hooks/useMatchStoreSelectors'
 
 
 export default function Match() {
 
-  const isStarted = useMatchStore((state) => state.isStarted)
-  const setIsStarted = useMatchStore((state) => state.setIsStarted)
-  const isPaused = useMatchStore((state) => state.isPaused)
-  const archiveMatch = useMatchStore((state) => state.archiveMatch)
-  const startPause = useMatchStore((state) => state.startPause)
-  const endPause = useMatchStore((state) => state.endPause)
-  const hasHydrated  = useHasHydrated()
+  const {
+    isStarted,
+    setIsStarted,
+    // isPaused,
+    // archiveMatch,
+    // startPause,
+    // endPause,
+  } = useMatchStoreSelectors()
+
+
+  // const isStarted = useMatchStore((state) => state.isStarted)
+  // const setIsStarted = useMatchStore((state) => state.setIsStarted)
+  // const isPaused = useMatchStore((state) => state.isPaused)
+  // const archiveMatch = useMatchStore((state) => state.archiveMatch)
+  // const startPause = useMatchStore((state) => state.startPause)
+  // const endPause = useMatchStore((state) => state.endPause)
+  const hasHydrated = useHasHydrated()
   // const {handleGoal} = usePlayerMenu(undefined) // Example usage, replace with actual dorsal
 
-  
 
 
-  
+
+
   useReloadOnVisibility()
 
   if (!hasHydrated) {
@@ -40,14 +51,16 @@ export default function Match() {
     <div className='flex flex-col items-center justify-center min-h-screen min-w-full'>
       <ScoreBoard />
       {/* <MatchStopwatch /> */}
-      {isStarted ? (
-        <>
-          <Button className='mt-2 mb-2' onClick={() => archiveMatch()}>
-            End Match
-          </Button>
-        </>
-      )
-        : (
+      {!isStarted &&
+        // ? (
+        //   <>
+        //     <Button className='mt-2 mb-2' onClick={() => archiveMatch()}>
+        //       End Match
+        //     </Button>
+        //   </>
+        // )
+        // :
+        (
           <Button className='mt-2 mb-2' onClick={() => setIsStarted(!isStarted)}>
             Start Match
           </Button>
@@ -56,7 +69,7 @@ export default function Match() {
       {
         isStarted &&
         <div className='flex flex-row items-center justify-center gap-2'>
-          {
+          {/* {
             isPaused ?
               <Button
                 onClick={() => endPause()}
@@ -69,7 +82,7 @@ export default function Match() {
               >
                 Pause
               </Button>
-          }
+          } */}
           <GeneralEvents />
           {/* <Button
             onClick={() => handleGoal({ dorsal: undefined, side: 'opponent' })}

@@ -1,10 +1,24 @@
 import useGeneralEvents from '@/app/hooks/useGeneralEvents';
+import useMatchStoreSelectors from '@/app/hooks/useMatchStoreSelectors';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuLabel } from '@/components/ui/dropdown-menu';
 
 export default function GeneralEvents() {
 
   const { handlers } = useGeneralEvents()
+  const {
+    // startPause,
+    endPause,
+    isPaused,
+    archiveMatch
+  } = useMatchStoreSelectors()
+  
+  
+  if (isPaused) return (
+    <Button onClick={() => endPause()}>
+      Continuar partido
+    </Button>
+  )
 
   return (
     <DropdownMenu>
@@ -41,6 +55,20 @@ export default function GeneralEvents() {
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => handlers.handleOffside()}>
           🚩 Fuera de Juego
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuSeparator />
+        <DropdownMenuLabel className='text-gray-500 font-bold'>
+          Partido
+        </DropdownMenuLabel>
+        <DropdownMenuItem disabled onClick={() => handlers.handleCorner()}>
+          ⌚ Media parte
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => handlers.handlePauseMatch()}>
+          ✋ Pausa excepcional
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => archiveMatch()}>
+          📣 Fin del Partido
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
