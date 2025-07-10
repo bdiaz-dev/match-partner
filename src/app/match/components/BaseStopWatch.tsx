@@ -19,13 +19,19 @@ export default function BaseStopwatch({
   const hasHydrated = useMatchStore.persist?.hasHydrated?.() ?? false;
   const [ minutes, setMinutes ] = useState(0)
   const [ seconds, setSeconds ] = useState(0)
+  
+  const computeElapsedSeconds = () => {
+  return Math.floor((Date.now() - startTimestamp) / 1000)
+}
+
 
   
   useEffect(() => {
     
     const update = () => {
-      const diff = Math.floor((Date.now() - startTimestamp) / 1000)
-      setElapsedSeconds(diff)
+      // const diff = Math.floor((Date.now() - startTimestamp) / 1000)
+      // setElapsedSeconds(diff)
+      setElapsedSeconds(computeElapsedSeconds())
     }
     update()
     if (!isRunning || !startTimestamp) return
@@ -38,7 +44,20 @@ export default function BaseStopwatch({
         intervalRef.current = null
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isRunning, startTimestamp])
+  
+  useEffect(() => {
+  const handleSync = () => {
+    setElapsedSeconds(computeElapsedSeconds())
+  }
+
+  window.addEventListener('sync-clocks', handleSync)
+  return () => {
+    window.removeEventListener('sync-clocks', handleSync)
+  }
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, [startTimestamp])
   
   
   const formatTime = (value: number, length: number = 2) =>

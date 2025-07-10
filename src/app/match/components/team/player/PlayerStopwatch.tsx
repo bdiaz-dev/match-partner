@@ -4,13 +4,15 @@ import { useEffect, useCallback, useMemo, useState } from 'react'
 import BaseStopwatch from '../../BaseStopWatch'
 import useMatchStore from '../../../stores/matchStore'
 import { getElapsedWithPauses } from '@/app/utils/getElapsedWithPauses'
+import useMatchStoreSelectors from '@/app/hooks/useMatchStoreSelectors'
 
 export default function PlayerStopwatch({ dorsal }: { dorsal: number }) {
-  const matchTeam = useMatchStore(state => state.matchTeam)
-  const setMatchTeam = useMatchStore(state => state.setMatchTeam)
-  const isStarted = useMatchStore(state => state.isStarted)
-  const isPaused = useMatchStore(state => state.isPaused)
-  const pausePeriods = useMatchStore(state => state.pausePeriods)
+  // const matchTeam = useMatchStore(state => state.matchTeam)
+  // const setMatchTeam = useMatchStore(state => state.setMatchTeam)
+  // const isStarted = useMatchStore(state => state.isStarted)
+  // const isPaused = useMatchStore(state => state.isPaused)
+  // const pausePeriods = useMatchStore(state => state.pausePeriods)
+  const {matchTeam, setMatchTeam, isStarted, isPaused, pausePeriods} = useMatchStoreSelectors()
   const hasHydrated = useMatchStore.persist.hasHydrated();
   const [startTimestamp, setStartTimestamp] = useState<number | undefined>(undefined)
 
@@ -72,7 +74,7 @@ export default function PlayerStopwatch({ dorsal }: { dorsal: number }) {
   useEffect(() => {
     const startTimestamp = Date.now() - currentTime * 1000
     setStartTimestamp(startTimestamp)
-  }, [currentTime])
+  }, [currentTime, isPaused])
   
 
   if (!player) return null;

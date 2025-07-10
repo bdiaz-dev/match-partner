@@ -154,7 +154,7 @@ export default function usePlayerMenu(dorsal: number | undefined) {
   const filterPlayersForSubstitution = () => {
     if (!matchTeam || dorsal === undefined) return []
     const bool = player(dorsal)?.isPlaying ? false : true
-    return matchTeam?.filter(p => p.dorsal !== dorsal && p.isPlaying === bool) || []
+    return matchTeam?.filter(p => p.dorsal !== dorsal && p.isPlaying === bool && p.card !== 'red') || []
   }
 
   const handleKeeperSave = (dorsal: number) => {

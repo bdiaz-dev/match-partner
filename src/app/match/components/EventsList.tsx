@@ -1,13 +1,23 @@
 import { Button } from '@/components/ui/button'
-import useMatchStore, { MatchEvent } from '../stores/matchStore'
+import { MatchEvent } from '../stores/matchStore'
 import { useState } from 'react'
 import useDeleteEvents from '@/app/hooks/useDeleteEvent'
+import useMatchStoreSelectors from '@/app/hooks/useMatchStoreSelectors'
+import ConfirmDialog from './ConfirmDialog'
 
 export default function EventsList() {
 
-  const events = useMatchStore(state => state.events)
+  const { isPaused, events } = useMatchStoreSelectors()
   const [isEditing, setIsEditing] = useState(false)
   const { handleDeleteEvent } = useDeleteEvents(setIsEditing)
+  const [showDialog, setShowDialog] = useState(false)
+  
+  const showDeleteButton = (event: MatchEvent) => isEditing && !(isPaused && event.type === 'pause') && !(event.type === 'endFirstTime') && !(event.type === 'startSecondTime')
+
+  const handleCancelDelete = () => {
+    setShowDialog(false)
+    setIsEditing(false)
+  }
 
   const SubstitutionEvent = ({ e }: { e: MatchEvent }) => {
     if (!e.playersOnSubstitution || e.playersOnSubstitution.length === 0) return null
@@ -29,8 +39,8 @@ export default function EventsList() {
   }
 
   const hasEvents = events.length > 0
-  
-  const goalTextStyle = (type :string, side :string) => {
+
+  const goalTextStyle = (type: string, side: string) => {
     if (type === 'goal') return side === 'team' ? 'text-green-700' : 'text-orange-600'
     if (type === 'redCard') return 'text-red-600'
     if (type === 'card') return 'text-yellow-600'
@@ -39,36 +49,43 @@ export default function EventsList() {
   }
 
   return (
-    <div className='flex flex-col items-center justify-center bg-slate-300 rounded-lg p-2 relative'>
-      <h2 className='text-2xl font-bold text-gray-800'>Eventos</h2>
-      { isEditing &&
-        <p className='text-sm text-red-600'>Modo edición activo</p>}
-      <Button
-        disabled={!hasEvents}
-        onClick={() => hasEvents && setIsEditing(!isEditing)}
-        className={`${isEditing ? 'bg-red-600' : 'bg-slate-400'} absolute top-2 right-2 text-xs`}
-      >✍</Button>
-      <div className='flex flex-col items-start justify-start w-full min-w-90 min-h-80 max-h-full overflow-y-auto mt-2'>
-        {events.length > 0 ? (
-          events.map((event, index) => event.type === 'substitution' ? (
-            <SubstitutionEvent e={event} key={index} />
+      <div className='flex flex-col items-center justify-center bg-slate-300 rounded-lg p-2 relative'>
+        <h2 className='text-2xl font-bold text-gray-800'>Eventos</h2>
+        {isEditing &&
+          <p className='text-sm text-red-600'>Modo edición activo</p>}
+        <Button
+          disabled={!hasEvents}
+          onClick={() => hasEvents && setIsEditing(!isEditing)}
+          className={`${isEditing ? 'bg-red-600' : 'bg-slate-400'} absolute top-2 right-2 text-xs`}
+        >✍</Button>
+        <div className='flex flex-col items-start justify-start w-full min-w-90 min-h-80 max-h-full overflow-y-auto mt-2'>
+          {events.length > 0 ? (
+            events.map((event, index) => event.type === 'substitution' ? (
+              <SubstitutionEvent e={event} key={index} />
+            ) : (
+              <div key={index} className='p-2 border-b border-gray-200 w-full'>
+                {showDeleteButton(event) &&
+                  <button className='rounded-full mr-2 hover:scale-110 transition-scale duration-100 cursor-pointer'
+                    onClick={() => { setShowDialog(true) }}
+                  >
+                    ❌
+                  </button>}
+                <ConfirmDialog
+                  onConfirm={() => { handleDeleteEvent({ id: event.id, type: event.type }) }}
+                  onCancel={handleCancelDelete}
+                  open={showDialog}
+                  onOpenChange={handleCancelDelete}
+                  type='delete'
+                />
+                <span className={`${goalTextStyle(event.type, (!!event.playerName ? 'team' : 'opponent'))} font-semibold`}>{event.title + ': '}</span>
+                <span className='text-gray-600'>{event.playerName} {event.playerName ? `(#${event.playerDorsal})` : ''}</span>
+                <span className='text-gray-500 text-sm text-nowrap'>{' - ' + event.time}</span>
+              </div>
+            ))
           ) : (
-            <div key={index} className='p-2 border-b border-gray-200 w-full'>
-              {isEditing &&
-                <button className='rounded-full mr-2 hover:scale-110 transition-scale duration-100 cursor-pointer'
-                  onClick={() => { handleDeleteEvent({ id: event.id, type: event.type }) }}
-                >
-                  ❌
-                </button>}
-              <span className={`${goalTextStyle(event.type, (!!event.playerName ? 'team' : 'opponent'))} font-semibold`}>{event.title + ': '}</span>
-              <span className='text-gray-600'>{event.playerName} {event.playerName ? `(#${event.playerDorsal})` : ''}</span>
-              <span className='text-gray-500 text-sm text-nowrap'>{' - ' + event.time}</span>
-            </div>
-          ))
-        ) : (
-          <p className='text-gray-600'>Sin eventos de momento</p>
-        )}
+            <p className='text-gray-600'>Sin eventos de momento</p>
+          )}
+        </div>
       </div>
-    </div>
   )
 }

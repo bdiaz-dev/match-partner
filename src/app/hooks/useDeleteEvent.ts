@@ -63,10 +63,10 @@ export default function useDeleteEvents(setisEditing: (value: boolean) => void) 
       // Actualizar el estado con los eventos filtrados
       setEvents(updatedEvents)
     }
-    if (confirm("¿Estás seguro de que quieres eliminar este evento?")) {
+    // if (confirm("¿Estás seguro de que quieres eliminar este evento?")) {
       deleteEvent()
       setisEditing(false)
-    }
+    // }
   };
 
   return {

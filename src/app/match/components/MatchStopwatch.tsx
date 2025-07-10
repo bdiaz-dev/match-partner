@@ -53,7 +53,7 @@ export default function MatchStopwatch() {
     // Calcula el timestamp inicial para el cronómetro visual
     const timestamp = startTime ? Date.now() - elapsed * 1000 : undefined
     setTimestamp(timestamp)
-  }, [startTime, elapsed, hasHydrated])
+  }, [startTime, elapsed, hasHydrated, isPaused])
 
 
   // console.log({

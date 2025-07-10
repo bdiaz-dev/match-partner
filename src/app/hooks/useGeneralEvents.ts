@@ -12,14 +12,17 @@ export default function useGeneralEvents() {
     events,
     setEvents,
     startPause,
-    // endPause
+    // isHalfTime,
+    setIsHalfTime,
+    setIsSecondTime,
+    endPause
   } = useMatchStoreSelectors()
-  const now = new Date().toISOString()
 
-  const handleGeneralEvents = (title: string, type: MatchEvent['type']) => {
+  const handleGeneralEvents = (title: string, type: MatchEvent['type'], now?: 'string') => {
+    // const now = new Date().toISOString()
     if (!startTime) return
     const { minutes, seconds } = getElapsedWithPauses(startTime, pausePeriods)
-    const id = (type !== 'pause') ? `${type}-${minutes}-${seconds}` : now
+    const id = (type !== 'pause') ? `${type}-${minutes}-${seconds}` : (now ?? new Date().toISOString())
     const newEvent: MatchEvent = {
       title,
       type,
@@ -38,8 +41,22 @@ export default function useGeneralEvents() {
     handleFoul: () => { handleGeneralEvents('🚫 Falta Rival', 'foul') },
     handleOpponentKeeperSave: () => { handleGeneralEvents('🧤 Parada Rival', 'keeperSave') },
     handlePauseMatch: () => {
+      const now = new Date().toISOString()
       startPause(now)
       handleGeneralEvents('✋ Pausa del partido excepcional', 'pause')
+    },
+    handleHalfTimeStart: () => {
+      const now = new Date().toISOString()
+      setIsHalfTime(true)
+      startPause(now)
+      handleGeneralEvents('⌚ Fin primera parte', 'endFirstTime')
+    },
+    handleHalfTimeEnd: () => {
+      // const now = new Date().toISOString()
+      setIsHalfTime(false)
+      setIsSecondTime(true)
+      endPause()
+      handleGeneralEvents('🏃‍♂️ Inicio segunda parte', 'startSecondTime')
     }
   }
 

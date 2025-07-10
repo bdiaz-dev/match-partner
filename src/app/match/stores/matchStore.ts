@@ -29,7 +29,7 @@ export type GoalItem = {
 
 export type MatchEvent = {
   title: string
-  type: 'goal' | 'foul' | 'substitution' | 'other' | 'changeStatus' | 'offside' | 'corner' | 'keeperSave' | 'card' | 'redCard' | 'shot' | 'injury' | 'pause'
+  type: 'goal' | 'foul' | 'substitution' | 'other' | 'changeStatus' | 'offside' | 'corner' | 'keeperSave' | 'card' | 'redCard' | 'shot' | 'injury' | 'pause' | 'endFirstTime' | 'startSecondTime'
   playerName?: string
   playerDorsal?: number
   playersOnSubstitution?: Array<PlayerForSubstitution>
@@ -44,6 +44,10 @@ interface MatchState {
   setIsStarted: (isStarted: boolean) => void
   isPaused: boolean
   setIsPaused: (isPaused: boolean) => void
+  isHalfTime: boolean
+  setIsHalfTime: (isHalfTime: boolean) => void
+  isSecondTime: boolean
+  setIsSecondTime: (isSecondTime: boolean) => void
   matchTeam: Array<MatchPlayer>
   setMatchTeam: (matchTeam: Array<MatchPlayer>) => void
   events: Array<MatchEvent>
@@ -71,6 +75,12 @@ const useMatchStore = create<MatchState>()(
       isPaused: false,
       setIsPaused: (isPaused) => set({ isPaused }),
 
+      isHalfTime: false,
+      setIsHalfTime: (isHalfTime) => set({ isHalfTime }),
+      
+      isSecondTime: false,
+      setIsSecondTime: (isSecondTime) => set({ isSecondTime }),
+
       matchTeam: [],
       setMatchTeam: (matchTeam) => set({ matchTeam }),
 
@@ -79,7 +89,7 @@ const useMatchStore = create<MatchState>()(
 
       pausePeriods: [],
       setPausePeriods: (pausePeriods) => set({ pausePeriods }),
-      startPause: (now) => 
+      startPause: (now) =>
         // const now = new Date().toISOString()
         set(state => ({
           pausePeriods: [...state.pausePeriods, { start: now, id: now }],
@@ -106,6 +116,8 @@ const useMatchStore = create<MatchState>()(
           startTime: null,
           isStarted: false,
           isPaused: false,
+          isHalfTime: false,
+          isSecondTime: false,
           pausePeriods: [],
           matchTeam: [],
           events: [],

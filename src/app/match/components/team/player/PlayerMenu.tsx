@@ -16,6 +16,7 @@ import usePlayerMenu from '@/app/hooks/usePlayerMenu'
 import { useEffect, useState } from 'react'
 // import useMatchStore from '@/app/match/stores/matchStore'
 import useMatchStoreSelectors from '@/app/hooks/useMatchStoreSelectors'
+import DorsalForMenu from './DorsalForMenu'
 
 export default function PlayerMenu({ dorsal }: { dorsal: number }) {
 
@@ -136,7 +137,8 @@ export default function PlayerMenu({ dorsal }: { dorsal: number }) {
                         key={p.dorsal}
                         onClick={() => handlersPlayer.toggleSubstitution(p.dorsal, dorsal)}
                       >
-                        {p.name} (#{p.dorsal})
+                        {DorsalForMenu(p)}{p.name} {p.isInjured && '🤕'} {p.card === 'yellow' && '🟨'}
+                        {/* (#{p.dorsal}) */}
                       </DropdownMenuItem>
                     ))}
 
