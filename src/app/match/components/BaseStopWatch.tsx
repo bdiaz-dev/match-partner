@@ -52,6 +52,7 @@ export default function BaseStopwatch({
     setElapsedSeconds(computeElapsedSeconds())
   }
 
+  if (!isRunning) return
   window.addEventListener('sync-clocks', handleSync)
   return () => {
     window.removeEventListener('sync-clocks', handleSync)

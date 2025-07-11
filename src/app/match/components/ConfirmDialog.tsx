@@ -48,16 +48,14 @@ export default function ConfirmDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>
             {text[type].title}
-            {/* ¿Estás seguro de eliminar? */}
             </AlertDialogTitle>
           <AlertDialogDescription>
             {text[type].description}
-            {/* Esta acción no se puede deshacer. Se eliminará de forma permanente. */}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={onCancel}>No</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm}>Sí</AlertDialogAction>
+          <AlertDialogCancel className='bg-red-700 text-white' onClick={onCancel}>No</AlertDialogCancel>
+          <AlertDialogAction className='bg-green-900' onClick={onConfirm}>Sí</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

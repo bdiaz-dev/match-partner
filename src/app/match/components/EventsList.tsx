@@ -58,7 +58,7 @@ export default function EventsList() {
           onClick={() => hasEvents && setIsEditing(!isEditing)}
           className={`${isEditing ? 'bg-red-600' : 'bg-slate-400'} absolute top-2 right-2 text-xs`}
         >✍</Button>
-        <div className='flex flex-col items-start justify-start w-full min-w-90 min-h-80 max-h-full overflow-y-auto mt-2'>
+        <div className='flex flex-col items-start justify-start w-full min-w-90 min-h-80 mt-2 max-h-100 overflow-y-scroll custom-scrollbar' >
           {events.length > 0 ? (
             events.map((event, index) => event.type === 'substitution' ? (
               <SubstitutionEvent e={event} key={index} />

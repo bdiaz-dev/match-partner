@@ -6,9 +6,6 @@ export default function Player({ dorsal }: { dorsal: number }) {
   return (
     <div className='flex flex-row gap-2 items-center justify-center bg-slate-300 rounded-lg p-2'>
       <PlayerMenu dorsal={dorsal} />
-      {/* <Button className='bg-blue-800'>
-        {dorsal}
-      </Button> */}
       <PlayerStopwatch dorsal={dorsal} />
     </div>
   )
