@@ -8,6 +8,7 @@ import ScoreBoard from './components/ScoreBoard'
 import EventsList from './components/EventsList'
 import GeneralEvents from './components/GeneralEvents'
 import useMatchStoreSelectors from '../hooks/useMatchStoreSelectors'
+import MatchStatistics from './components/MatchStatistics'
 
 
 export default function Match() {
@@ -54,6 +55,7 @@ export default function Match() {
           <>
             <MatchTeam />
             <EventsList />
+            <MatchStatistics />
           </>
         )
         }

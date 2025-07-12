@@ -44,7 +44,7 @@ export default function ChangeDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className='text-center'>
             Elige el jugador para cambiar por
           </DialogTitle>
           <DialogTitle className='flex flex-row justify-center gap-2'>

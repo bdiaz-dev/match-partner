@@ -58,6 +58,11 @@ export default function GeneralEvents() {
               </Button>
             </DialogClose>
             <DialogClose asChild>
+              <Button onClick={() => handlers.handleShot()}>
+                🏹 Disparo Rival
+              </Button>
+            </DialogClose>
+            <DialogClose asChild>
               <Button onClick={() => handlers.handleCornerOpponent()}>
                 🏳️ Córner Rival
               </Button>
@@ -70,6 +75,16 @@ export default function GeneralEvents() {
             <DialogClose asChild>
               <Button onClick={() => handlers.handleFoul()}>
                 🚫 Falta Rival
+              </Button>
+            </DialogClose>
+            <DialogClose asChild>
+              <Button onClick={() => handlers.handleOpponentYellowCard()}>
+                🟨 Tarjeta Amarilla Rival
+              </Button>
+            </DialogClose>
+            <DialogClose asChild>
+              <Button onClick={() => handlers.handleOpponentRedCard()}>
+                🟥 Tarjeta Roja Rival
               </Button>
             </DialogClose>
             <DialogClose asChild>

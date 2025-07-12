@@ -35,11 +35,14 @@ export default function useGeneralEvents() {
   const handlers = {
     handleGoal,
     handleOffside: () => { handleGeneralEvents('🚩 Fuera de Juego', 'offside') },
+    handleShot: () => { handleGeneralEvents('🏹 Disparo Rival', 'shot') },
     handleOffsideOpponent: () => { handleGeneralEvents('🚩 Fuera de Juego Rival', 'offside') },
     handleCorner: () => { handleGeneralEvents('🏳️ Córner', 'corner') },
     handleCornerOpponent: () => { handleGeneralEvents('🏳️ Córner Rival', 'corner') },
     handleFoul: () => { handleGeneralEvents('🚫 Falta Rival', 'foul') },
     handleOpponentKeeperSave: () => { handleGeneralEvents('🧤 Parada Rival', 'keeperSave') },
+    handleOpponentYellowCard: () => { handleGeneralEvents('🟨 Tj. Amarilla para el rival', 'card') },
+    handleOpponentRedCard: () => { handleGeneralEvents('🟥 Tj. Roja para el rival', 'redCard') },
     handlePauseMatch: () => {
       const now = new Date().toISOString()
       startPause(now)

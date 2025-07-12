@@ -47,11 +47,10 @@ export default function RedToGoalKeeperDialog({
   }
 
   const completeSubstitution = (newGoalkeeper: MatchPlayer, playerToRemove: MatchPlayer | null) => {
-    // Ejecutar toda la lógica en una sola función para evitar conflictos de estado
     handlersPlayer.setAsGoalKeeper({
       dorsal: newGoalkeeper.dorsal,
       playerToRemove: playerToRemove,
-      playerToRedCard: player(dorsal) as MatchPlayer // El portero que recibe la tarjeta roja
+      playerToRedCard: player(dorsal) as MatchPlayer
     })
     
     // Cerrar el diálogo
@@ -173,7 +172,7 @@ export default function RedToGoalKeeperDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className='text-red-600'>
+          <DialogTitle className='text-red-600 text-center'>
             {dialogContent.title}
           </DialogTitle>
           <DialogTitle>
