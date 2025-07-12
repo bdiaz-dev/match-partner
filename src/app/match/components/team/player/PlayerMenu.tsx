@@ -15,6 +15,8 @@ import useMatchStoreSelectors from '@/app/hooks/useMatchStoreSelectors'
 // import DorsalForMenu from './DorsalForMenu'
 import ChangeDialog from './ChangeDialog'
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import DorsalForMenu from './DorsalForMenu'
+import PlayerStopwatch from './PlayerStopwatch'
 
 export default function PlayerMenu({ dorsal }: { dorsal: number }) {
 
@@ -92,6 +94,7 @@ export default function PlayerMenu({ dorsal }: { dorsal: number }) {
     </>
   )
 
+
   return (
     <>
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -100,15 +103,34 @@ export default function PlayerMenu({ dorsal }: { dorsal: number }) {
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>
-              {player(dorsal)?.name + `(#${dorsal})` || 'Player ' + dorsal}
+
+            <DialogTitle className='flex flex-row justify-center items-center gap-2'>
+              <span>
+                {DorsalForMenu(player(dorsal))}
+              </span>
+              <span>
+                {player(dorsal)?.name || 'Player ' + dorsal}
+              </span>
+              {/* {player(dorsal) && <DorsalForMenu player={player(dorsal)} />} */}
             </DialogTitle>
+
+            {player(dorsal)?.card === 'yellow' &&
+              <span className='text-black font-bold bg-yellow-500'>
+                Amonestado
+              </span>}
             {player(dorsal)?.isInjured &&
               <DialogTitle className='text-red-400'>
                 Lesionado
               </DialogTitle>
             }
-            <DialogDescription />
+
+            <DialogDescription>
+            </DialogDescription>
+
+            <div className='flex flex-row gap-1 justify-center'>
+              Tiempo Jugado
+              <PlayerStopwatch dorsal={dorsal} />
+            </div>
           </DialogHeader>
           <div className='flex flex-col gap-1'>
 
@@ -122,16 +144,6 @@ export default function PlayerMenu({ dorsal }: { dorsal: number }) {
               <DropdownMenuSeparator />
 
             </>
-
-            <Button
-              onClick={handleChangeFromPlaying}
-              className='bg-blue-900'
-            >
-              🔄 Salir al banquillo
-            </Button>
-
-
-
             {player(dorsal)?.isGoalKeeper &&
               <>
                 <Button
@@ -148,7 +160,13 @@ export default function PlayerMenu({ dorsal }: { dorsal: number }) {
               >
                 🏹 Disparo
               </Button>
-              <DropdownMenuSeparator />
+              {/* <DropdownMenuSeparator /> */}
+              <Button
+                onClick={handleChangeFromPlaying}
+                className='bg-blue-900'
+              >
+                🔄 Salir al banquillo
+              </Button>
 
               <DropdownMenuSeparator />
               <Button
@@ -165,17 +183,13 @@ export default function PlayerMenu({ dorsal }: { dorsal: number }) {
                 🚫 Falta
               </Button>
 
-              {player(dorsal)?.card !== 'yellow' ?
+              {player(dorsal)?.card !== 'yellow' &&
                 <Button
                   onClick={() => handleActionAndClose(() => handlersPlayer.handleCard(dorsal, 'yellow'))}
                   className='bg-slate-700'
                 >
                   🟨 Tarjeta Amarilla
                 </Button>
-                :
-                <span className='text-black font-bold bg-yellow-500'>
-                  Jugador amonestado
-                </span>
               }
               <Button
                 onClick={() => handleActionAndClose(() => handlersPlayer.handleCard(dorsal, 'red'))}
@@ -183,7 +197,7 @@ export default function PlayerMenu({ dorsal }: { dorsal: number }) {
               >
                 🟥 Tarjeta Roja
               </Button>
-              <DropdownMenuSeparator />
+              {/* <DropdownMenuSeparator /> */}
             </>
 
 

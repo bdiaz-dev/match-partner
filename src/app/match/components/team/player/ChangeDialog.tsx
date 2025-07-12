@@ -29,7 +29,7 @@ export default function ChangeDialog({
   dorsal
 }: ConfirmDeleteDialogProps) {
 
-  const { handlersPlayer } = usePlayerMenu(dorsal)
+  const { handlersPlayer, player } = usePlayerMenu(dorsal)
 
   const handleSubstitutionAndClose = (p: MatchPlayer) => {
     onCancel()
@@ -45,7 +45,16 @@ export default function ChangeDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            Elige el jugador para el cambio
+            Elige el jugador para cambiar por
+          </DialogTitle>
+          <DialogTitle className='flex flex-row justify-center gap-2'>
+            <span>
+              {DorsalForMenu(player(dorsal))}
+            </span>
+            <span>
+              {player(dorsal)?.name || 'Player ' + dorsal}
+            </span>
+            {/* {player(dorsal) && <DorsalForMenu player={player(dorsal)} />} */}
           </DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>

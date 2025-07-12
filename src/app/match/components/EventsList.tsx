@@ -11,12 +11,27 @@ export default function EventsList() {
   const [isEditing, setIsEditing] = useState(false)
   const { handleDeleteEvent } = useDeleteEvents(setIsEditing)
   const [showDialog, setShowDialog] = useState(false)
+  const [eventToDelete, setEventToDelete] = useState<MatchEvent | null>(null)
   
   const showDeleteButton = (event: MatchEvent) => isEditing && !(isPaused && event.type === 'pause') && !(event.type === 'endFirstTime') && !(event.type === 'startSecondTime')
 
   const handleCancelDelete = () => {
     setShowDialog(false)
-    setIsEditing(false)
+    setEventToDelete(null)
+  }
+
+  const handleOpenDialog = (event: MatchEvent) => {
+    setEventToDelete(event)
+    setShowDialog(true)
+  }
+
+  const handleConfirmDelete = () => {
+    if (eventToDelete) {
+      handleDeleteEvent({ id: eventToDelete.id, type: eventToDelete.type })
+      setShowDialog(false)
+      setEventToDelete(null)
+      setIsEditing(false)
+    }
   }
 
   const SubstitutionEvent = ({ e }: { e: MatchEvent }) => {
@@ -66,17 +81,10 @@ export default function EventsList() {
               <div key={index} className='p-2 border-b border-gray-200 w-full'>
                 {showDeleteButton(event) &&
                   <button className='rounded-full mr-2 hover:scale-110 transition-scale duration-100 cursor-pointer'
-                    onClick={() => { setShowDialog(true) }}
+                    onClick={() => handleOpenDialog(event)}
                   >
                     ❌
                   </button>}
-                <ConfirmDialog
-                  onConfirm={() => { handleDeleteEvent({ id: event.id, type: event.type }) }}
-                  onCancel={handleCancelDelete}
-                  open={showDialog}
-                  onOpenChange={handleCancelDelete}
-                  type='delete'
-                />
                 <span className={`${goalTextStyle(event.type, (!!event.playerName ? 'team' : 'opponent'))} font-semibold`}>{event.title + ': '}</span>
                 <span className='text-gray-600'>{event.playerName} {event.playerName ? `(#${event.playerDorsal})` : ''}</span>
                 <span className='text-gray-500 text-sm text-nowrap'>{' - ' + event.time}</span>
@@ -86,6 +94,15 @@ export default function EventsList() {
             <p className='text-gray-600'>Sin eventos de momento</p>
           )}
         </div>
+        
+        {/* Diálogo único fuera del bucle */}
+        <ConfirmDialog
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
+          open={showDialog}
+          onOpenChange={handleCancelDelete}
+          type='delete'
+        />
       </div>
   )
 }
