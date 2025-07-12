@@ -17,6 +17,7 @@ import ChangeDialog from './ChangeDialog'
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import DorsalForMenu from './DorsalForMenu'
 import PlayerStopwatch from './PlayerStopwatch'
+import RedToGoalKeeperDialog from './RedToGoalKeeperDialog'
 
 export default function PlayerMenu({ dorsal }: { dorsal: number }) {
 
@@ -25,6 +26,7 @@ export default function PlayerMenu({ dorsal }: { dorsal: number }) {
   const [playerColor, setPlayerColor] = useState('bg-blue-800')
   const [showChangeDialog, setShowChangeDialog] = useState(false)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [showRedToGoalKeeperDialog, setShowRedToGoalKeeperDialog] = useState(false)
 
   const handleChangeFromPlaying = () => {
     setShowChangeDialog(true)
@@ -192,7 +194,14 @@ export default function PlayerMenu({ dorsal }: { dorsal: number }) {
                 </Button>
               }
               <Button
-                onClick={() => handleActionAndClose(() => handlersPlayer.handleCard(dorsal, 'red'))}
+                onClick={() => {
+                  if (player(dorsal)?.isGoalKeeper) {
+                    setIsDialogOpen(false)
+                    setShowRedToGoalKeeperDialog(true)
+                    return
+                  }
+                  handleActionAndClose(() => handlersPlayer.handleCard(dorsal, 'red'))
+                }}
                 className='bg-slate-700'
               >
                 🟥 Tarjeta Roja
@@ -217,6 +226,13 @@ export default function PlayerMenu({ dorsal }: { dorsal: number }) {
         open={showChangeDialog}
         onCancel={() => setShowChangeDialog(false)}
         onOpenChange={() => setShowChangeDialog(false)}
+        dorsal={dorsal}
+      />
+
+      <RedToGoalKeeperDialog
+        open={showRedToGoalKeeperDialog}
+        onCancel={() => setShowRedToGoalKeeperDialog(false)}
+        onOpenChange={() => setShowRedToGoalKeeperDialog(false)}
         dorsal={dorsal}
       />
     </>

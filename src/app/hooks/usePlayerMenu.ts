@@ -1,5 +1,5 @@
 // import Match from '../match/page'
-import { GoalItem, MatchEvent } from '../match/stores/matchStore'
+import { GoalItem, MatchEvent, MatchPlayer } from '../match/stores/matchStore'
 import { getElapsedWithPauses } from '../utils/getElapsedWithPauses'
 import useMatchStoreSelectors from './useMatchStoreSelectors'
 
@@ -28,7 +28,7 @@ export default function usePlayerMenu(dorsal: number | undefined) {
     setEvents([newEvent, ...events])
   }
 
-  const handleGoal = ({dorsal, side} : {dorsal: number | undefined, side: 'team' | 'opponent'}) => {
+  const handleGoal = ({ dorsal, side }: { dorsal: number | undefined, side: 'team' | 'opponent' }) => {
     if (!matchTeam || !startTime) return
     const { minutes, seconds } = getElapsedWithPauses(startTime, pausePeriods)
     const idForGoal = `goal-${side}-${minutes}-${seconds}`
@@ -38,7 +38,7 @@ export default function usePlayerMenu(dorsal: number | undefined) {
       console.error('Dorsal is required to handle goal')
       return
 
-    // gol rival
+      // gol rival
     } else if (!dorsal && side === 'opponent') {
       setGoals([
         ...goals,
@@ -55,7 +55,7 @@ export default function usePlayerMenu(dorsal: number | undefined) {
       })
       return
 
-    // gol del equipo
+      // gol del equipo
     } else if (dorsal && side === 'team') {
       const goalPlayer = player(dorsal)
       if (!goalPlayer) {
@@ -104,6 +104,123 @@ export default function usePlayerMenu(dorsal: number | undefined) {
     })
     setMatchTeam(updatedTeam)
   }
+
+const setAsGoalKeeper = ({ dorsal, playerToRemove, playerToRedCard }: {
+  dorsal: number,
+  playerToRemove: MatchPlayer | null,
+  playerToRedCard: MatchPlayer | null
+}) => {
+  if (!matchTeam || !startTime) return
+
+  const newGoalkeeper = player(dorsal)
+  
+  const updatedTeam = matchTeam.map((player) => {
+    // 1. Nuevo portero
+    if (player.dorsal === dorsal) {
+      if (player.isPlaying) {
+        // Ya está jugando, solo cambiar a portero
+        return {
+          ...player,
+          isGoalKeeper: true,
+        }
+      } else {
+        // Está en banquillo, entra a jugar como portero
+        return {
+          ...player,
+          isGoalKeeper: true,
+          isPlaying: true,
+          startPlayingTime: new Date().toISOString(),
+        }
+      }
+    }
+
+    // 2. Portero que recibe tarjeta roja
+    if (playerToRedCard && player.dorsal === playerToRedCard.dorsal) {
+      return {
+        ...player,
+        card: 'red' as const,
+        isGoalKeeper: false,
+        isPlaying: false,
+      }
+    }
+
+    // 3. Jugador que debe salir del campo (si aplica)
+    if (playerToRemove && player.dorsal === playerToRemove.dorsal) {
+      return {
+        ...player,
+        isPlaying: false,
+      }
+    }
+
+    // 4. Resto de jugadores: quitar isGoalKeeper si lo tenían
+    return {
+      ...player,
+      isGoalKeeper: false
+    }
+  })
+
+  // Generar todos los eventos de una vez
+  const eventsToAdd: (Omit<MatchEvent, 'id' | 'time'> & { id?: string, time?: string })[] = []
+  
+  // 1. Evento de tarjeta roja al portero expulsado
+  if (playerToRedCard) {
+    eventsToAdd.push({
+      title: '🟥 Tj. Roja',
+      type: 'redCard',
+      playerName: playerToRedCard.name,
+      playerDorsal: playerToRedCard.dorsal,
+      unremovable: true
+    })
+  }
+
+  // 2. Evento del nuevo portero
+  if (newGoalkeeper) {
+    if (!newGoalkeeper.isPlaying) {
+      // Si entra desde el banquillo
+      eventsToAdd.push({
+        title: '🥅 Nuevo portero (entra)',
+        type: 'changeStatus',
+        playerName: newGoalkeeper.name,
+        playerDorsal: dorsal,
+        unremovable: true
+      })
+    } else {
+      // Si ya estaba jugando, solo cambio de posición
+      eventsToAdd.push({
+        title: '🥅 Nuevo portero',
+        type: 'changeStatus',
+        playerName: newGoalkeeper.name,
+        playerDorsal: dorsal,
+        unremovable: true
+      })
+    }
+  }
+
+  // 3. Evento del jugador que sale (si aplica)
+  if (playerToRemove) {
+    eventsToAdd.push({
+      title: '🔚 Sale del campo',
+      type: 'changeStatus',
+      playerName: playerToRemove.name,
+      playerDorsal: playerToRemove.dorsal,
+      unremovable: true
+    })
+  }
+
+  // Añadir todos los eventos de una vez
+  if (eventsToAdd.length > 0) {
+    const { minutes, seconds } = getElapsedWithPauses(startTime, pausePeriods)
+    const processedEvents = eventsToAdd.map((event, index) => {
+      const id = event.id ?? `${event.type}-${minutes}-${seconds}-${index}`
+      const time = event.time ?? `${minutes} : ${seconds}`
+      return { ...event, id, time }
+    })
+    
+    setEvents([...processedEvents, ...events])
+  }
+
+  setMatchTeam(updatedTeam)
+}
 
   const toggleSubstitution = (dorsal1: number, dorsal2: number) => {
     if (!matchTeam || !startTime) return
@@ -156,6 +273,11 @@ export default function usePlayerMenu(dorsal: number | undefined) {
     const bool = player(dorsal)?.isPlaying ? false : true
     return matchTeam?.filter(p => p.dorsal !== dorsal && p.isPlaying === bool && p.card !== 'red') || []
   }
+  const filterPlayersForRedToGoalKeeper = () => {
+    if (!matchTeam || dorsal === undefined) return []
+    // const bool = player(dorsal)?.isPlaying ? false : true
+    return matchTeam?.filter(p => p.dorsal !== dorsal && p.card !== 'red') || []
+  }
 
   const handleKeeperSave = (dorsal: number) => {
     if (!matchTeam || !startTime) return
@@ -167,7 +289,7 @@ export default function usePlayerMenu(dorsal: number | undefined) {
       type: 'keeperSave'
     })
   }
-  
+
   const handleFoul = (dorsal: number) => {
     if (!matchTeam || !startTime) return
     const fouler = player(dorsal)
@@ -178,7 +300,7 @@ export default function usePlayerMenu(dorsal: number | undefined) {
       playerDorsal: dorsal
     })
   }
-  
+
   const toggleCard = (dorsal: number, cardType: 'yellow' | 'red') => {
     if (!matchTeam || !startTime) return
     const updatedTeam = matchTeam.map((player) => {
@@ -194,10 +316,13 @@ export default function usePlayerMenu(dorsal: number | undefined) {
     })
     setMatchTeam(updatedTeam)
   }
-  
+
   const handleCard = (dorsal: number, cardType: 'yellow' | 'red') => {
     if (!matchTeam || !startTime) return
     const cardedPlayer = player(dorsal)
+    if (cardedPlayer?.isPlaying && cardedPlayer?.isGoalKeeper && cardType === 'red') {
+      // logica de cambio
+    }
     toggleCard(dorsal, cardType)
     addEvent({
       title: cardType === 'yellow' ? '🟨 Tj. Amarilla' : '🟥 Tj. Roja',
@@ -216,7 +341,7 @@ export default function usePlayerMenu(dorsal: number | undefined) {
       playerDorsal: dorsal
     })
   }
-  
+
   const handleInjury = (dorsal: number) => {
     if (!matchTeam || !startTime) return
     const injuredPlayer = player(dorsal)
@@ -237,7 +362,7 @@ export default function usePlayerMenu(dorsal: number | undefined) {
     })
     setMatchTeam(updatedTeam)
   }
-  
+
   const handlersPlayer = {
     togglePlayerStatus,
     toggleSubstitution,
@@ -247,7 +372,9 @@ export default function usePlayerMenu(dorsal: number | undefined) {
     handleFoul,
     handleCard,
     handleShot,
-    handleInjury
+    handleInjury,
+    filterPlayersForRedToGoalKeeper,
+    setAsGoalKeeper
   }
 
   return {

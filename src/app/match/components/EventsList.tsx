@@ -13,7 +13,12 @@ export default function EventsList() {
   const [showDialog, setShowDialog] = useState(false)
   const [eventToDelete, setEventToDelete] = useState<MatchEvent | null>(null)
   
-  const showDeleteButton = (event: MatchEvent) => isEditing && !(isPaused && event.type === 'pause') && !(event.type === 'endFirstTime') && !(event.type === 'startSecondTime')
+  const showDeleteButton = (event: MatchEvent) => 
+    isEditing &&
+  !(isPaused && event.type === 'pause')&&
+  !(event.type === 'endFirstTime') &&
+  !(event.type === 'startSecondTime') &&
+  !event.unremovable
 
   const handleCancelDelete = () => {
     setShowDialog(false)
@@ -95,7 +100,6 @@ export default function EventsList() {
           )}
         </div>
         
-        {/* Diálogo único fuera del bucle */}
         <ConfirmDialog
           onConfirm={handleConfirmDelete}
           onCancel={handleCancelDelete}

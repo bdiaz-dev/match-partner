@@ -29,12 +29,13 @@ export type GoalItem = {
 
 export type MatchEvent = {
   title: string
-  type: 'goal' | 'foul' | 'substitution' | 'other' | 'changeStatus' | 'offside' | 'corner' | 'keeperSave' | 'card' | 'redCard' | 'shot' | 'injury' | 'pause' | 'endFirstTime' | 'startSecondTime'
+  type: 'goal' | 'foul' | 'substitution' | 'other' | 'changeStatus' | 'offside' | 'corner' | 'keeperSave' | 'card' | 'redCard' | 'shot' | 'injury' | 'pause' | 'endFirstTime' | 'startSecondTime' | 'changeStatus'
   playerName?: string
   playerDorsal?: number
   playersOnSubstitution?: Array<PlayerForSubstitution>
   time: string
   id: string
+  unremovable?: boolean
 }
 
 interface MatchState {
