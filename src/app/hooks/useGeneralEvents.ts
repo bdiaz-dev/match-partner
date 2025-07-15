@@ -31,7 +31,7 @@ export default function useGeneralEvents() {
     }
     if (type === 'keeperSave') {
       if (!dorsalOnKeeperSave) return
-      newEvent.dorsalOnKeeperSave}
+      newEvent.dorsalOnKeeperSave = dorsalOnKeeperSave}
     setEvents([newEvent, ...events])
   }
   
