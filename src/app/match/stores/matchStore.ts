@@ -36,6 +36,7 @@ export type MatchEvent = {
   time: string
   id: string
   unremovable?: boolean
+  dorsalOnKeeperSave?: number
 }
 
 interface MatchState {

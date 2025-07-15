@@ -1,4 +1,4 @@
-import { MatchEvent } from '../match/stores/matchStore'
+import { MatchEvent, MatchPlayer } from '../match/stores/matchStore'
 import { getElapsedWithPauses } from '../utils/getElapsedWithPauses'
 import useMatchStoreSelectors from './useMatchStoreSelectors'
 import usePlayerMenu from './usePlayerMenu'
@@ -18,7 +18,7 @@ export default function useGeneralEvents() {
     endPause
   } = useMatchStoreSelectors()
 
-  const handleGeneralEvents = (title: string, type: MatchEvent['type'], now?: 'string') => {
+  const handleGeneralEvents = (title: string, type: MatchEvent['type'], dorsalOnKeeperSave?: number, now?: 'string') => {
     // const now = new Date().toISOString()
     if (!startTime) return
     const { minutes, seconds } = getElapsedWithPauses(startTime, pausePeriods)
@@ -29,6 +29,9 @@ export default function useGeneralEvents() {
       time: `${minutes} : ${seconds}`,
       id
     }
+    if (type === 'keeperSave') {
+      if (!dorsalOnKeeperSave) return
+      newEvent.dorsalOnKeeperSave}
     setEvents([newEvent, ...events])
   }
   
@@ -40,7 +43,7 @@ export default function useGeneralEvents() {
     handleCorner: () => { handleGeneralEvents('🏳️ Córner', 'corner') },
     handleCornerOpponent: () => { handleGeneralEvents('🏳️ Córner Rival', 'corner') },
     handleFoul: () => { handleGeneralEvents('🚫 Falta Rival', 'foul') },
-    handleOpponentKeeperSave: () => { handleGeneralEvents('🧤 Parada Rival', 'keeperSave') },
+    handleOpponentKeeperSave: (p : MatchPlayer) => { handleGeneralEvents(`🧤 Parada Rival, disparo de ${p.name}(#${p.dorsal})`, 'keeperSave', p.dorsal) },
     handleOpponentYellowCard: () => { handleGeneralEvents('🟨 Tj. Amarilla para el rival', 'card') },
     handleOpponentRedCard: () => { handleGeneralEvents('🟥 Tj. Roja para el rival', 'redCard') },
     handlePauseMatch: () => {

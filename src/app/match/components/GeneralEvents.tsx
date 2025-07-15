@@ -3,9 +3,9 @@ import useMatchStoreSelectors from '@/app/hooks/useMatchStoreSelectors';
 import { Button } from '@/components/ui/button';
 import { DropdownMenuLabel } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-
 import ConfirmDialog from './ConfirmDialog';
 import { useState } from 'react';
+import SelectPlayerOnOpponentKeeperSave from './generalEvents/SelectPlayerOnOpponentKeeperSave';
 
 export default function GeneralEvents() {
 
@@ -20,9 +20,7 @@ export default function GeneralEvents() {
   } = useMatchStoreSelectors()
   const [showHalfTimeDialog, setShowHalfTimeDialog] = useState(false)
   const [showEndMatchDialog, setShowEndMatchDialog] = useState(false)
-  
-  
-
+  const [showPlayerSelectorForKeeperSave, setShowPlayerSelectorForKeeperSave] = useState(false)
 
   if (isPaused && !isHalfTime) return (
     <Button onClick={() => endPause()}>
@@ -46,7 +44,7 @@ export default function GeneralEvents() {
           <DialogHeader>
             <DialogTitle>Eventos Generales</DialogTitle>
             <DialogDescription></DialogDescription>
-            </DialogHeader>
+          </DialogHeader>
 
           <div className='flex flex-col gap-1'>
             <DropdownMenuLabel className='text-gray-500 font-bold'>
@@ -88,7 +86,7 @@ export default function GeneralEvents() {
               </Button>
             </DialogClose>
             <DialogClose asChild>
-              <Button onClick={() => handlers.handleOpponentKeeperSave()}>
+              <Button onClick={() => setShowPlayerSelectorForKeeperSave(true)}>
                 🧤 Parada Rival
               </Button>
             </DialogClose>
@@ -139,6 +137,7 @@ export default function GeneralEvents() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
       <ConfirmDialog
         onConfirm={() => { handlers.handleHalfTimeStart() }}
         onCancel={() => setShowHalfTimeDialog(false)}
@@ -152,6 +151,11 @@ export default function GeneralEvents() {
         open={showEndMatchDialog}
         onOpenChange={() => setShowEndMatchDialog(false)}
         type='endMatch'
+      />
+      <SelectPlayerOnOpponentKeeperSave
+        open={showPlayerSelectorForKeeperSave}
+        onCancel={() => setShowPlayerSelectorForKeeperSave(false)}
+        onOpenChange={() => setShowPlayerSelectorForKeeperSave(false)}
       />
     </>
   )
