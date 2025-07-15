@@ -33,11 +33,11 @@ export default function MatchStopwatch() {
     if (isStarted && !startTime) {
       const now = new Date().toISOString()
       setStartTime(now)
-      toast('Match started')
+      toast('📣 Empieza el partido')
     }
 
     if (!isStarted && startTime) {
-      toast('Match ended')
+      toast('📣 Fin del partido')
     }
   }, [isStarted, startTime, setStartTime])
 

@@ -1,5 +1,6 @@
 import { MatchEvent } from '../../match/stores/matchStore'
 import { getElapsedWithPauses } from '../../utils/getElapsedWithPauses'
+import { toast } from 'sonner'
 
 export function usePlayerEvents(startTime: string | null, pausePeriods: { start: string; id: string, end?: string }[], events: MatchEvent[], setEvents: (events: MatchEvent[]) => void) {
   const addEvent = (event: Omit<MatchEvent, 'id' | 'time'> & { id?: string, time?: string }) => {
@@ -8,6 +9,7 @@ export function usePlayerEvents(startTime: string | null, pausePeriods: { start:
     const id = event.id ?? `${event.type}-${minutes}-${seconds}`
     const time = event.time ?? `${minutes} : ${seconds}`
     const newEvent: MatchEvent = { ...event, id, time }
+    toast(newEvent.title)
     setEvents([newEvent, ...events])
   }
 
@@ -20,7 +22,9 @@ export function usePlayerEvents(startTime: string | null, pausePeriods: { start:
       const time = event.time ?? `${minutes} : ${seconds}`
       return { ...event, id, time }
     })
-    
+    processedEvents.map(e => {
+      toast(e.title)
+    })
     setEvents([...processedEvents, ...events])
   }
 
