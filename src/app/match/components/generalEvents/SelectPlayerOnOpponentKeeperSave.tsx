@@ -36,7 +36,7 @@ export default function SelectPlayerOnOpponentKeeperSave({
     handlers.handleOpponentKeeperSave(p)
   }
 
-  const filterPlayersCanShot = () => matchTeam?.filter((p: MatchPlayer) => !p.isPlaying)
+  const filterPlayersCanShot = () => matchTeam?.filter((p: MatchPlayer) => p.isPlaying)
 
 
   return (
