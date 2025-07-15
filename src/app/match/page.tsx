@@ -6,7 +6,7 @@ import useHasHydrated from '../hooks/useHasHydrated'
 import { useRefreshStopwatchOnVisibility } from '../hooks/useRefreshStopwatchOnVisibility'
 import ScoreBoard from './components/ScoreBoard'
 import EventsList from './components/EventsList'
-import GeneralEvents from './components/GeneralEvents'
+import GeneralEvents from './components/generalEvents/GeneralEvents'
 import useMatchStoreSelectors from '../hooks/useMatchStoreSelectors'
 import MatchStatistics from './components/MatchStatistics'
 
