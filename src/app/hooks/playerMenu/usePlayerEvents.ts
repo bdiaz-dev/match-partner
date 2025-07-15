@@ -9,13 +9,25 @@ export function usePlayerEvents(startTime: string | null, pausePeriods: { start:
     const id = event.id ?? `${event.type}-${minutes}-${seconds}`
     const time = event.time ?? `${minutes} : ${seconds}`
     const newEvent: MatchEvent = { ...event, id, time }
-    toast(newEvent.title)
+    if (newEvent.type === 'substitution' && newEvent.playersOnSubstitution) {
+      const playersText = newEvent.playersOnSubstitution
+        .map((player) =>
+          player.isEntering
+            ? `Entra ${player.name} (#${player.dorsal})`
+            : `Sale ${player.name} (#${player.dorsal})`
+        )
+        .join(' / ')
+
+      toast(`🔄 Cambio: ${playersText} - ${newEvent.time}`)
+    } else {
+      toast(`${newEvent.title}: ${newEvent.playerName} -${newEvent.time}`)
+    }
     setEvents([newEvent, ...events])
   }
 
   const addMultipleEvents = (eventsToAdd: (Omit<MatchEvent, 'id' | 'time'> & { id?: string, time?: string })[]) => {
     if (!startTime || eventsToAdd.length === 0) return
-    
+
     const { minutes, seconds } = getElapsedWithPauses(startTime, pausePeriods)
     const processedEvents = eventsToAdd.map((event, index) => {
       const id = event.id ?? `${event.type}-${minutes}-${seconds}-${index}`
@@ -23,7 +35,7 @@ export function usePlayerEvents(startTime: string | null, pausePeriods: { start:
       return { ...event, id, time }
     })
     processedEvents.map(e => {
-      toast(e.title)
+      toast(`${e.title}: ${e.playerName} -${e.time}`)
     })
     setEvents([...processedEvents, ...events])
   }
