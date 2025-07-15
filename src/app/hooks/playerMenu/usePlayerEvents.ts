@@ -13,8 +13,8 @@ export function usePlayerEvents(startTime: string | null, pausePeriods: { start:
       const playersText = newEvent.playersOnSubstitution
         .map((player) =>
           player.isEntering
-            ? `Entra ${player.name} (#${player.dorsal})`
-            : `Sale ${player.name} (#${player.dorsal})`
+            ? `Entra (#${player.dorsal})`
+            : `Sale (#${player.dorsal})`
         )
         .join(' / ')
 

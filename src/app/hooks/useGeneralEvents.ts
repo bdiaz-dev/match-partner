@@ -2,6 +2,7 @@ import { MatchEvent, MatchPlayer } from '../match/stores/matchStore'
 import { getElapsedWithPauses } from '../utils/getElapsedWithPauses'
 import useMatchStoreSelectors from './useMatchStoreSelectors'
 import usePlayerMenu from './usePlayerMenu'
+import { toast } from 'sonner'
 
 export default function useGeneralEvents() {
 
@@ -32,6 +33,7 @@ export default function useGeneralEvents() {
     if (type === 'keeperSave') {
       if (!dorsalOnKeeperSave) return
       newEvent.dorsalOnKeeperSave = dorsalOnKeeperSave}
+    toast(`${newEvent.title}: ${newEvent.time}`)
     setEvents([newEvent, ...events])
   }
   
