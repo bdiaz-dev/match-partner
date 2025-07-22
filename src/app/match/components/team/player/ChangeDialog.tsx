@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import DorsalForMenu from './DorsalForMenu'
-import usePlayerMenu from '@/app/hooks/usePlayerMenu'
+import usePlayerMenu from '@/app/hooks/playerMenu/usePlayerMenu'
 import { Button } from '@/components/ui/button'
 import PlayerStopwatch from './PlayerStopwatch'
 import { MatchPlayer } from '@/app/match/stores/matchStore'

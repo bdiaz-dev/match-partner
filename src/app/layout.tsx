@@ -31,7 +31,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
-      <Toaster />
+      <Toaster
+        toastOptions={{
+          style: {
+            background: '#e2f7fcff',
+            color: 'black',
+          }
+        }}
+      />
       {/* <SyncStoreAcrossTabs /> */}
       </body>
     </html>

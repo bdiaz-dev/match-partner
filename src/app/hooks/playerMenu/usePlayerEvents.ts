@@ -20,7 +20,7 @@ export function usePlayerEvents(startTime: string | null, pausePeriods: { start:
 
       toast(`🔄 Cambio: ${playersText} - ${newEvent.time}`)
     } else {
-      toast(`${newEvent.title}: ${newEvent.playerName} -${newEvent.time}`)
+      toast(`${newEvent.title}${!!newEvent.playerName ? ': ' + newEvent.playerName : ''} - ${newEvent.time}`)
     }
     setEvents([newEvent, ...events])
   }

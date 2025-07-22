@@ -1,5 +1,5 @@
-import useMatchStore from '../stores/matchStore'
-import MatchStopwatch from './MatchStopwatch'
+import useMatchStore from '../../stores/matchStore'
+import MatchStopwatch from '../stopwatch/MatchStopwatch'
 
 export default function ScoreBoard() {
   const matchGoals = useMatchStore(state => state.goals)

@@ -1,6 +1,6 @@
 // import useMatchStore from '../match/stores/matchStore'
-import { MatchPlayer } from '../match/stores/matchStore';
-import useMatchStoreSelectors from './useMatchStoreSelectors'
+import { MatchPlayer } from '../../match/stores/matchStore';
+import useMatchStoreSelectors from '../data/useMatchStoreSelectors'
 
 export default function useDeleteEvents(setisEditing: (value: boolean) => void) {
 

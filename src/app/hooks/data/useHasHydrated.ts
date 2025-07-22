@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import useMatchStore from '../match/stores/matchStore';
+import useMatchStore from '../../match/stores/matchStore';
 
 export default function useHasHydrated() {
   // const hasHydrated = useMatchStore.persist?.hasHydrated?.() ?? false;

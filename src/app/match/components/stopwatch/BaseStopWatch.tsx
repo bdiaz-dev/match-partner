@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import useMatchStore from '../stores/matchStore'
+import useMatchStore from '../../stores/matchStore'
 
 interface BaseStopwatchProps {
   startTimestamp?: number

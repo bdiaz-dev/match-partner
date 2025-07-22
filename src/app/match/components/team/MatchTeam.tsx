@@ -45,16 +45,19 @@ export default function MatchTeam() {
     <div className='flex flex-col items-center justify-center max-w-100 gap-2 flex-wrap mt-4 mb-4'>
       <h2 className='text-2xl font-bold text-gray-800'>Campo</h2>
 
+      <div
+        className='w-full h-full bg-[url(/field.svg)] bg-cover bg-center rounded'
+      >
       {/* Portero separado arriba */}
       {goalKeeper && (
         <div className='flex flex-col items-center mb-4'>
-          <p className='text-sm font-semibold text-blue-800'>Portero</p>
+          {/* <p className='text-sm font-semibold text-blue-800'>Portero</p> */}
           <Player dorsal={goalKeeper.dorsal} />
         </div>
       )}
 
       {/* Jugadores de campo */}
-      <div className='flex items-center justify-center max-w-100 gap-2 flex-wrap mt-4 mb-4'>
+      <div className='flex items-center justify-center max-w-100 gap-4 flex-wrap mt-4 mb-4'>
         {fieldPlayers.map(player => (
           <div key={player.dorsal} className='flex flex-col items-center'>
             <Player dorsal={player.dorsal} />
@@ -62,15 +65,22 @@ export default function MatchTeam() {
         ))}
       </div>
 
+      </div>
+
+
       {/* Banquillo */}
-      <div className='flex flex-col items-center justify-center max-w-100 gap-2 flex-wrap mt-4 mb-4'>
+      <div className='flex flex-col items-center justify-center max-w-100 gap-4 flex-wrap mt-4 mb-4'>
         <h2 className='text-2xl font-bold text-gray-800'>Banquillo</h2>
+        <div className='bg-blue-300 rounded'>
+
         <div className='flex items-center justify-center gap-2 flex-wrap mt-4 mb-4'>
           {bench.map(player => (
             <div key={player.dorsal} className='flex flex-col items-center'>
               <Player dorsal={player.dorsal} />
             </div>
           ))}
+
+          </div>
         </div>
       </div>
     </div>

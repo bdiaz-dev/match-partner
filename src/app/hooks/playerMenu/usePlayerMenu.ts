@@ -1,9 +1,9 @@
 import { GoalItem, MatchPlayer } from '@/app/match/stores/matchStore'
 import { getElapsedWithPauses } from '@/app/utils/getElapsedWithPauses'
-import useMatchStoreSelectors from './useMatchStoreSelectors'
-import { usePlayerActions } from './playerMenu/usePlayerActions'
-import { usePlayerEvents } from './playerMenu/usePlayerEvents'
-import { useGoalKeeper } from './playerMenu/useGoalKeeper'
+import useMatchStoreSelectors from '../data/useMatchStoreSelectors'
+import { usePlayerActions } from './usePlayerActions'
+import { usePlayerEvents } from './usePlayerEvents'
+import { useGoalKeeper } from './useGoalKeeper'
 
 export default function usePlayerMenu(dorsal: number | undefined) {
   const {

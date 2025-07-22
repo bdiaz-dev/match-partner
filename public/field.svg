@@ -1,0 +1,46 @@
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo del campo con franjas de césped -->
+  <defs>
+    <pattern id="cesped" patternUnits="userSpaceOnUse" width="400" height="20">
+      <rect width="400" height="10" fill="#66bb6a" fill-opacity="0.9"/>
+      <rect width="400" height="10" y="10" fill="#81c784" fill-opacity="0.9"/>
+    </pattern>
+  </defs>
+  
+  <!-- Campo de fútbol -->
+  <rect width="400" height="300" fill="url(#cesped)"/>
+  
+  <!-- Líneas del campo -->
+  <!-- Línea de medio campo -->
+  <line x1="0" y1="300" x2="400" y2="300" stroke="white" stroke-width="3"/>
+  
+  <!-- Círculo central -->
+  <circle cx="200" cy="300" r="60" fill="none" stroke="white" stroke-width="3"/>
+  <circle cx="200" cy="300" r="2" fill="white"/>
+  
+  <!-- Líneas laterales -->
+  <line x1="0" y1="0" x2="0" y2="300" stroke="white" stroke-width="3"/>
+  <line x1="400" y1="0" x2="400" y2="300" stroke="white" stroke-width="3"/>
+  
+  <!-- Área grande (área de penalti) -->
+  <rect x="130" y="0" width="140" height="110" fill="none" stroke="white" stroke-width="3"/>
+  
+  <!-- Área pequeña (área de meta) -->
+  <rect x="170" y="0" width="60" height="40" fill="none" stroke="white" stroke-width="3"/>
+  
+  <!-- Punto de penalti -->
+  <circle cx="200" cy="75" r="2" fill="white"/>
+  
+  <!-- Arco de penalti -->
+  <path d="M 130 110 A 60 60 0 0 1 270 110" fill="none" stroke="white" stroke-width="3"/>
+  
+  <!-- Portería -->
+  <rect x="185" y="0" width="30" height="8" fill="none" stroke="white" stroke-width="4"/>
+  <!-- Postes de la portería -->
+  <circle cx="185" cy="4" r="2" fill="white"/>
+  <circle cx="215" cy="4" r="2" fill="white"/>
+  
+  <!-- Esquinas del campo (cuartos de círculo) -->
+  <path d="M 0 0 A 8 8 0 0 1 8 0" fill="none" stroke="white" stroke-width="2"/>
+  <path d="M 400 0 A 8 8 0 0 0 392 0" fill="none" stroke="white" stroke-width="2"/>
+</svg>
