@@ -1,9 +1,10 @@
 import { Button } from '@/components/ui/button'
-import { MatchEvent } from '../stores/matchStore'
+import { MatchEvent } from '../../stores/matchStore'
 import { useState } from 'react'
-import useDeleteEvents from '@/app/hooks/useDeleteEvent'
-import useMatchStoreSelectors from '@/app/hooks/useMatchStoreSelectors'
-import ConfirmDialog from './ConfirmDialog'
+import useDeleteEvents from '@/app/hooks/events/useDeleteEvent'
+import useMatchStoreSelectors from '@/app/hooks/data/useMatchStoreSelectors'
+import ConfirmDialog from '../dialogs/ConfirmDialog'
+import getEventsColors from '@/app/utils/getEventsColors'
 
 export default function EventsList() {
 
@@ -60,14 +61,6 @@ export default function EventsList() {
 
   const hasEvents = events.length > 0
 
-  const goalTextStyle = (type: string, side: string) => {
-    if (type === 'goal') return side === 'team' ? 'text-green-700' : 'text-orange-600'
-    if (type === 'redCard') return 'text-red-600'
-    if (type === 'card') return 'text-yellow-600'
-    if (type === 'pause') return 'text-purple-600'
-    return 'text-gray-800'
-  }
-
   return (
       <div className='flex flex-col items-center justify-center bg-slate-300 rounded-lg p-2 relative'>
         <h2 className='text-2xl font-bold text-gray-800'>Eventos</h2>
@@ -90,7 +83,7 @@ export default function EventsList() {
                   >
                     ❌
                   </button>}
-                <span className={`${goalTextStyle(event.type, (!!event.playerName ? 'team' : 'opponent'))} font-semibold`}>{event.title + ': '}</span>
+                <span className={`${getEventsColors(event.type, (!!event.playerName ? 'team' : 'opponent'))} font-semibold`}>{event.title + ': '}</span>
                 <span className='text-gray-600'>{event.playerName} {event.playerName ? `(#${event.playerDorsal})` : ''}</span>
                 <span className='text-gray-500 text-sm text-nowrap'>{' - ' + event.time}</span>
               </div>

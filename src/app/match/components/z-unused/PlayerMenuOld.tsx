@@ -12,10 +12,10 @@ import {
   // DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import usePlayerMenu from '@/app/hooks/usePlayerMenu'
+import usePlayerMenu from '@/app/hooks/playerMenu/usePlayerMenu'
 import { useEffect, useState } from 'react'
 // import useMatchStore from '@/app/match/stores/matchStore'
-import useMatchStoreSelectors from '@/app/hooks/useMatchStoreSelectors'
+import useMatchStoreSelectors from '@/app/hooks/data/useMatchStoreSelectors'
 // import DorsalForMenu from './DorsalForMenu'
 // import ChangeDialog from './ChangeDialog'
 

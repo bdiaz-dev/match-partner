@@ -1,4 +1,4 @@
-import useMatchStoreSelectors from '@/app/hooks/useMatchStoreSelectors'
+import useMatchStoreSelectors from '@/app/hooks/data/useMatchStoreSelectors'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 import { BarChart3 } from 'lucide-react'

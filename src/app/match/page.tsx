@@ -2,13 +2,13 @@
 
 import { Button } from "@/components/ui/button"
 import MatchTeam from './components/team/MatchTeam'
-import useHasHydrated from '../hooks/useHasHydrated'
-import { useRefreshStopwatchOnVisibility } from '../hooks/useRefreshStopwatchOnVisibility'
-import ScoreBoard from './components/ScoreBoard'
-import EventsList from './components/EventsList'
+import useHasHydrated from '../hooks/data/useHasHydrated'
+import { useRefreshStopwatchOnVisibility } from '../hooks/stopwatch/useRefreshStopwatchOnVisibility'
+import ScoreBoard from './components/matchData/ScoreBoard'
+import EventsList from './components/matchData/EventsList'
 import GeneralEvents from './components/generalEvents/GeneralEvents'
-import useMatchStoreSelectors from '../hooks/useMatchStoreSelectors'
-import MatchStatistics from './components/MatchStatistics'
+import useMatchStoreSelectors from '../hooks/data/useMatchStoreSelectors'
+import MatchStatistics from './components/matchData/MatchStatistics'
 
 
 export default function Match() {

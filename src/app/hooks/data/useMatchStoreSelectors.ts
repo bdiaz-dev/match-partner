@@ -1,4 +1,4 @@
-import useMatchStore from '../match/stores/matchStore'
+import useMatchStore from '../../match/stores/matchStore'
 
 export default function useMatchStoreSelectors() {
   return {

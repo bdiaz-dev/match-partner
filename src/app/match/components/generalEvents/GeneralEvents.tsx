@@ -1,9 +1,9 @@
-import useGeneralEvents from '@/app/hooks/useGeneralEvents';
-import useMatchStoreSelectors from '@/app/hooks/useMatchStoreSelectors';
+import useGeneralEvents from '@/app/hooks/events/useGeneralEvents';
+import useMatchStoreSelectors from '@/app/hooks/data/useMatchStoreSelectors';
 import { Button } from '@/components/ui/button';
 import { DropdownMenuLabel } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import ConfirmDialog from '../ConfirmDialog';
+import ConfirmDialog from '../dialogs/ConfirmDialog';
 import { useState } from 'react';
 import SelectPlayerOnOpponentKeeperSave from './SelectPlayerOnOpponentKeeperSave';
 
@@ -36,20 +36,21 @@ export default function GeneralEvents() {
 
   return (
     <>
+    <div className='flex flex-row gap-2 flex-wrap items-center justify-center'>
       <Dialog>
         <DialogTrigger asChild>
-          <Button className='bg-blue-800'>Eventos Generales</Button>
+          <Button className='bg-blue-800'>Eventos Rival</Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Eventos Generales</DialogTitle>
+            <DialogTitle>Eventos Rival</DialogTitle>
             <DialogDescription></DialogDescription>
           </DialogHeader>
 
           <div className='flex flex-col gap-1'>
-            <DropdownMenuLabel className='text-gray-500 font-bold'>
+            {/* <DropdownMenuLabel className='text-gray-500 font-bold'>
               Rival
-            </DropdownMenuLabel>
+            </DropdownMenuLabel> */}
             <DialogClose asChild>
               <Button onClick={() => handlers.handleGoal({ dorsal: undefined, side: 'opponent' })}>
                 ⚽ Gol Rival
@@ -91,11 +92,29 @@ export default function GeneralEvents() {
               </Button>
             </DialogClose>
           </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant={'destructive'}>Cancelar</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button className='bg-blue-800'>Eventos Equipo</Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Eventos Equipo</DialogTitle>
+            <DialogDescription></DialogDescription>
+          </DialogHeader>
 
           <div className='flex flex-col gap-1'>
-            <DropdownMenuLabel className='text-gray-500 font-bold'>
+            {/* <DropdownMenuLabel className='text-gray-500 font-bold'>
               Equipo
-            </DropdownMenuLabel>
+            </DropdownMenuLabel> */}
             <DialogClose asChild>
               <Button onClick={() => handlers.handleCorner()}>
                 🏳️ Córner
@@ -108,10 +127,29 @@ export default function GeneralEvents() {
             </DialogClose>
           </div>
 
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant={'destructive'}>Cancelar</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button className='bg-blue-800'>Control Partido</Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Control de Partido</DialogTitle>
+            <DialogDescription></DialogDescription>
+          </DialogHeader>
+
           <div className='flex flex-col gap-1'>
-            <DropdownMenuLabel className='text-gray-500 font-bold'>
+            {/* <DropdownMenuLabel className='text-gray-500 font-bold'>
               Partido
-            </DropdownMenuLabel>
+            </DropdownMenuLabel> */}
             {!isSecondTime &&
               <DialogClose asChild>
                 <Button onClick={() => setShowHalfTimeDialog(true)}>
@@ -137,6 +175,7 @@ export default function GeneralEvents() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    </div>
 
       <ConfirmDialog
         onConfirm={() => { handlers.handleHalfTimeStart() }}

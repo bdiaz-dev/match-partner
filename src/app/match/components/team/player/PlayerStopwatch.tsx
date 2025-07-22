@@ -1,10 +1,10 @@
 'use client'
 
 import { useEffect, useCallback, useMemo, useState } from 'react'
-import BaseStopwatch from '../../BaseStopWatch'
+import BaseStopwatch from '../../stopwatch/BaseStopWatch'
 import useMatchStore from '../../../stores/matchStore'
 import { getElapsedWithPauses } from '@/app/utils/getElapsedWithPauses'
-import useMatchStoreSelectors from '@/app/hooks/useMatchStoreSelectors'
+import useMatchStoreSelectors from '@/app/hooks/data/useMatchStoreSelectors'
 
 export default function PlayerStopwatch({ dorsal, style = 'default' }: { dorsal: number, style?: 'default' | 'forChange' }) {
   // const matchTeam = useMatchStore(state => state.matchTeam)
@@ -79,11 +79,13 @@ export default function PlayerStopwatch({ dorsal, style = 'default' }: { dorsal:
 
   if (!player) return null;
 
+  const classNameConstants = ' font-bold text-center bg-white rounded-full px-2'
+
   return (
     <BaseStopwatch
       startTimestamp={startTimestamp}
       isRunning={player?.isPlaying && !isPaused}
-      className={style === 'forChange' ? "font-bold text-center text-gray-400" : "font-bold text-center text-gray-600"}
+      className={(style === 'forChange' ? "text-gray-400" : "text-gray-600") + classNameConstants}
     />
   )
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
-import useMatchStore from '../stores/matchStore'
+import useMatchStore from '../../stores/matchStore'
 import BaseStopwatch from './BaseStopWatch'
 import { getElapsedWithPauses } from '@/app/utils/getElapsedWithPauses'
 

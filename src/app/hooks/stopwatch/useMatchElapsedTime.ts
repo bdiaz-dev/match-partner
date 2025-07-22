@@ -1,6 +1,6 @@
 // utils/useMatchElapsedTime.ts
 
-import useMatchStore from '../match/stores/matchStore'
+import useMatchStore from '../../match/stores/matchStore'
 
 export function useMatchElapsedTime() {
   

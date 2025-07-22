@@ -12,8 +12,8 @@ import { Button } from '@/components/ui/button'
 import { MatchPlayer } from '@/app/match/stores/matchStore'
 import PlayerStopwatch from "../team/player/PlayerStopwatch"
 import DorsalForMenu from "../team/player/DorsalForMenu"
-import useMatchStoreSelectors from "@/app/hooks/useMatchStoreSelectors"
-import useGeneralEvents from "@/app/hooks/useGeneralEvents"
+import useMatchStoreSelectors from "@/app/hooks/data/useMatchStoreSelectors"
+import useGeneralEvents from "@/app/hooks/events/useGeneralEvents"
 
 interface SelectPlayerOnOpponentKeeperSaveDialogProps {
   open: boolean
