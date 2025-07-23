@@ -12,11 +12,11 @@ import {
 import usePlayerMenu from '@/app/hooks/playerMenu/usePlayerMenu'
 import { useEffect, useState } from 'react'
 import useMatchStoreSelectors from '@/app/hooks/data/useMatchStoreSelectors'
-import ChangeDialog from './ChangeDialog'
+import SubstitutionDialog from '../../dialogs/SubstitutionDialog'
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import DorsalForMenu from './DorsalForMenu'
 import PlayerStopwatch from './PlayerStopwatch'
-import RedToGoalKeeperDialog from './RedToGoalKeeperDialog'
+import RedToGoalKeeperDialog from '../../dialogs/RedToGoalKeeperDialog'
 
 export default function PlayerMenu({ dorsal }: { dorsal: number }) {
 
@@ -89,7 +89,7 @@ export default function PlayerMenu({ dorsal }: { dorsal: number }) {
         className={playerColor}
       >{dorsal}
       </Button>
-      <ChangeDialog
+      <SubstitutionDialog
         open={showChangeDialog}
         onCancel={() => setShowChangeDialog(false)}
         onOpenChange={() => setShowChangeDialog(false)}
@@ -228,7 +228,7 @@ export default function PlayerMenu({ dorsal }: { dorsal: number }) {
 
       </Dialog>
 
-      <ChangeDialog
+      <SubstitutionDialog
         open={showChangeDialog}
         onCancel={() => setShowChangeDialog(false)}
         onOpenChange={() => setShowChangeDialog(false)}

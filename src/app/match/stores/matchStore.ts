@@ -37,6 +37,7 @@ export type MatchEvent = {
   id: string
   unremovable?: boolean
   dorsalOnKeeperSave?: number
+  side?: 'team' | 'opponent'
 }
 
 interface MatchState {

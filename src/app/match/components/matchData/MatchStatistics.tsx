@@ -127,12 +127,12 @@ const MatchStatistics = () => {
     const opponentShots = events.filter(e => e.type === 'shot' && !e.playerName).length
 
     // Corners
-    const teamCorners = events.filter(e => e.type === 'corner' && e.playerName).length
-    const opponentCorners = events.filter(e => e.type === 'corner' && !e.playerName).length
+    const teamCorners = events.filter(e => e.type === 'corner' && e.side !== 'opponent').length
+    const opponentCorners = events.filter(e => e.type === 'corner' && e.side === 'opponent').length
 
     // Offsides
-    const teamOffsides = events.filter(e => e.type === 'offside' && e.playerName).length
-    const opponentOffsides = events.filter(e => e.type === 'offside' && !e.playerName).length
+    const teamOffsides = events.filter(e => e.type === 'offside' && e.side !== 'opponent').length
+    const opponentOffsides = events.filter(e => e.type === 'offside' && e.side === 'opponent').length
 
     // Posesión simulada (se podría calcular mejor con más datos)
     const teamEvents = events.filter(e => e.playerName).length

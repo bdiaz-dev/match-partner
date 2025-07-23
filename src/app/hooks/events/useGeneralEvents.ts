@@ -33,6 +33,9 @@ export default function useGeneralEvents() {
     if (type === 'keeperSave') {
       if (!dorsalOnKeeperSave) return
       newEvent.dorsalOnKeeperSave = dorsalOnKeeperSave}
+    if (title.match('rival') || title.match('Rival')) {
+      newEvent.side = 'opponent'
+    }
     toast(`${newEvent.title}: ${newEvent.time}`)
     setEvents([newEvent, ...events])
   }

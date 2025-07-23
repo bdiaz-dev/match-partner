@@ -8,10 +8,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import DorsalForMenu from './DorsalForMenu'
+import DorsalForMenu from '../team/player/DorsalForMenu'
 import usePlayerMenu from '@/app/hooks/playerMenu/usePlayerMenu'
 import { Button } from '@/components/ui/button'
-import PlayerStopwatch from './PlayerStopwatch'
+import PlayerStopwatch from '../team/player/PlayerStopwatch'
 import { MatchPlayer } from '@/app/match/stores/matchStore'
 import { DropdownMenuLabel } from '@/components/ui/dropdown-menu'
 import { useState } from 'react'
