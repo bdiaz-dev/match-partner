@@ -1,6 +1,6 @@
 
 interface Handlers {
-    handleGoal: (args: { dorsal: number | undefined; side: 'opponent' | 'team' }) => void;
+    handleGoal: (args: { dorsal: number | undefined; side: 'opponent' | 'team', isOwnGoal?: boolean }) => void;
     handleShot: () => void;
     handleCornerOpponent: () => void;
     handleOffsideOpponent: () => void;
@@ -35,6 +35,7 @@ export default function useGeneralEventButtons({
         { label: '🟨 Tarjeta Amarilla Rival', callback: () => handlers.handleOpponentYellowCard() },
         { label: '🟥 Tarjeta Roja Rival', callback: () => handlers.handleOpponentRedCard() },
         { label: '🧤 Parada Rival', callback: () => setShowPlayerSelectorForKeeperSave(true) },
+        { label: '⛔ Gol en propia rival', callback: () => handlers.handleGoal({ dorsal: undefined, side: 'opponent', isOwnGoal: true }) },
     ]
 
     const teamEventsButtons = [

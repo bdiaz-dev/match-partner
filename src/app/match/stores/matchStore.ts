@@ -25,6 +25,7 @@ export type GoalItem = {
   time: string
   side: 'team' | 'opponent'
   id: string
+  isOwnGoal?: boolean
 }
 
 export type MatchEvent = {
@@ -38,6 +39,7 @@ export type MatchEvent = {
   unremovable?: boolean
   dorsalOnKeeperSave?: number
   side?: 'team' | 'opponent'
+  isOwnGoal?: boolean
 }
 
 interface MatchState {

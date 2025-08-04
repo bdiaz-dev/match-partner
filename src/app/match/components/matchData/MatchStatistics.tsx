@@ -41,35 +41,6 @@ const StatBar = ({ label, teamValue, opponentValue, teamColor = 'bg-green-700', 
   )
 }
 
-interface PossessionBarProps {
-  teamPossession: number
-  opponentPossession: number
-}
-
-const PossessionBar = ({ teamPossession, opponentPossession }: PossessionBarProps) => {
-  return (
-    <div className="mb-4">
-      <div className="flex justify-between items-center mb-2">
-        <span className="text-sm font-medium text-gray-800">{teamPossession}%</span>
-        <span className="text-sm font-medium text-gray-800">Posesión</span>
-        <span className="text-sm font-medium text-white bg-orange-800 rounded-full px-2 py-1">
-          {opponentPossession}%
-        </span>
-      </div>
-      <div className="flex h-3 bg-gray-200 rounded-full overflow-hidden">
-        <div
-          className="bg-green-700 h-full"
-          style={{ width: `${teamPossession}%` }}
-        />
-        <div
-          className="bg-orange-700 h-full"
-          style={{ width: `${opponentPossession}%` }}
-        />
-      </div>
-    </div>
-  )
-}
-
 interface ShotsBreakdownProps {
   teamOnTarget: number
   teamOffTarget: number
@@ -102,9 +73,23 @@ const MatchStatistics = () => {
 
   // Calcular estadísticas basadas en los datos reales del partido
   const calculateStats = () => {
-    // Goles
-    const teamGoals = goals.filter(g => g.side === 'team').length
-    const opponentGoals = goals.filter(g => g.side === 'opponent').length
+    // Goles que resultaron de tiros reales (sin goles en propia de ningún equipo)
+    const teamShotGoals = goals.filter(g => g.side === 'team' && !g.isOwnGoal).length
+    const opponentShotGoals = goals.filter(g => g.side === 'opponent' && !g.isOwnGoal).length
+
+    // Goles totales para el resultado (incluyendo beneficios de goles en propia)
+    const teamTotalGoals = goals.filter(g => 
+      (g.side === 'team' && !g.isOwnGoal) || 
+      (g.side === 'opponent' && g.isOwnGoal)
+    ).length
+    const opponentTotalGoals = goals.filter(g => 
+      (g.side === 'opponent' && !g.isOwnGoal) || 
+      (g.side === 'team' && g.isOwnGoal)
+    ).length
+
+    // Goles en propia puerta
+    const teamOwnGoals = goals.filter(g => g.side === 'team' && g.isOwnGoal).length
+    const opponentOwnGoals = goals.filter(g => g.side === 'opponent' && g.isOwnGoal).length
 
     // Faltas - eventos con playerName son nuestros
     const teamFouls = events.filter(e => e.type === 'foul' && e.playerName).length
@@ -134,22 +119,13 @@ const MatchStatistics = () => {
     const teamOffsides = events.filter(e => e.type === 'offside' && e.side !== 'opponent').length
     const opponentOffsides = events.filter(e => e.type === 'offside' && e.side === 'opponent').length
 
-    // Posesión simulada (se podría calcular mejor con más datos)
-    const teamEvents = events.filter(e => e.playerName).length
-    const opponentEvents = events.filter(e => !e.playerName).length
-    const totalEvents = teamEvents + opponentEvents
-
-    let teamPossession = 50
-    let opponentPossession = 50
-
-    if (totalEvents > 0) {
-      teamPossession = Math.round((teamEvents / totalEvents) * 100)
-      opponentPossession = 100 - teamPossession
-    }
-
     return {
-      teamGoals,
-      opponentGoals,
+      teamTotalGoals,
+      opponentTotalGoals,
+      teamShotGoals,
+      opponentShotGoals,
+      teamOwnGoals,
+      opponentOwnGoals,
       teamFouls,
       opponentFouls,
       teamYellowCards,
@@ -163,9 +139,7 @@ const MatchStatistics = () => {
       teamCorners,
       opponentCorners,
       teamOffsides,
-      opponentOffsides,
-      teamPossession,
-      opponentPossession
+      opponentOffsides
     }
   }
 
@@ -194,8 +168,8 @@ const MatchStatistics = () => {
             <h3 className="text-center text-sm font-bold text-gray-600 mb-4">RESULTADO</h3>
             <StatBar
               label="Goles"
-              teamValue={stats.teamGoals}
-              opponentValue={stats.opponentGoals}
+              teamValue={stats.teamTotalGoals}
+              opponentValue={stats.opponentTotalGoals}
             />
           </div>
 
@@ -204,10 +178,6 @@ const MatchStatistics = () => {
           {/* Generales */}
           <div>
             <h3 className="text-center text-sm font-bold text-gray-600 mb-4">GENERALES</h3>
-            <PossessionBar
-              teamPossession={stats.teamPossession}
-              opponentPossession={stats.opponentPossession}
-            />
             <StatBar
               label="Saques de esquina"
               teamValue={stats.teamCorners}
@@ -227,13 +197,13 @@ const MatchStatistics = () => {
             <h3 className="text-center text-sm font-bold text-gray-600 mb-4">ATAQUE</h3>
             <StatBar
               label="Tiros totales"
-              teamValue={stats.teamShots + stats.opponentSaves + stats.teamGoals}
-              opponentValue={stats.opponentShots + stats.teamSaves + stats.opponentGoals}
+              teamValue={stats.teamShots + stats.opponentSaves + stats.teamShotGoals}
+              opponentValue={stats.opponentShots + stats.teamSaves + stats.opponentShotGoals}
             />
             <ShotsBreakdown
-              teamOnTarget={stats.opponentSaves + stats.teamGoals}
+              teamOnTarget={stats.opponentSaves + stats.teamShotGoals}
               teamOffTarget={stats.teamShots}
-              opponentOnTarget={stats.teamSaves + stats.opponentGoals}
+              opponentOnTarget={stats.teamSaves + stats.opponentShotGoals}
               opponentOffTarget={stats.opponentShots}
             />
           </div>
@@ -269,6 +239,20 @@ const MatchStatistics = () => {
               label="Tarjetas rojas"
               teamValue={stats.teamRedCards}
               opponentValue={stats.opponentRedCards}
+            />
+          </div>
+
+          <DropdownMenuSeparator />
+
+          {/* Errores */}
+          <div>
+            <h3 className="text-center text-sm font-bold text-gray-600 mb-4">ERRORES</h3>
+            <StatBar
+              label="Goles en propia"
+              teamValue={stats.teamOwnGoals}
+              opponentValue={stats.opponentOwnGoals}
+              // teamColor="bg-red-600"
+              // opponentColor="bg-red-500"
             />
           </div>
         </div>
