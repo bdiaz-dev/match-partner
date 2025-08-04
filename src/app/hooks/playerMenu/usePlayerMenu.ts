@@ -26,24 +26,19 @@ export default function usePlayerMenu(dorsal: number | undefined) {
   )
 
   // Funciones específicas usando los hooks base
-  const handleGoal = ({ dorsal, side }: { dorsal: number | undefined, side: 'team' | 'opponent' }) => {
+const handleGoal = ({ dorsal, side, isOwnGoal = false }: { dorsal: number | undefined, side: 'team' | 'opponent', isOwnGoal?: boolean }) => {
     if (!matchTeam || !startTime) return
     
     const { minutes, seconds } = getElapsedWithPauses(startTime, pausePeriods)
     const idForGoal = `goal-${side}-${minutes}-${seconds}`
 
-    if (!dorsal && side === 'team') {
-      console.error('Dorsal is required to handle goal')
-      return
-    }
+    // Caso 1: Gol de nuestro equipo (requiere dorsal)
+    if (side === 'team') {
+      if (!dorsal) {
+        console.error('Dorsal is required to handle team goal')
+        return
+      }
 
-    if (!dorsal && side === 'opponent') {
-      setGoals([...goals, { time: `${minutes} : ${seconds}`, side, id: idForGoal }])
-      addEvent({ title: '⚽ Gol rival', type: 'goal', id: idForGoal })
-      return
-    }
-
-    if (dorsal && side === 'team') {
       const goalPlayer = findPlayer(dorsal)
       if (!goalPlayer) {
         console.error(`Player with dorsal ${dorsal} not found`)
@@ -55,16 +50,41 @@ export default function usePlayerMenu(dorsal: number | undefined) {
         playerDorsal: dorsal,
         time: `${minutes} : ${seconds}`,
         side,
-        id: idForGoal
+        id: idForGoal,
+        isOwnGoal
       }
       
       setGoals([...goals, newGoal])
+      
+      // Determinar el título del evento basado en si es gol en propia
+      const eventTitle = isOwnGoal ? '⛔ Gol en propia' : '⚽ Gol equipo'
+      
       addEvent({
-        title: '⚽ Gol equipo',
+        title: eventTitle,
         type: 'goal',
         playerName: goalPlayer.name,
         playerDorsal: dorsal,
-        id: idForGoal
+        id: idForGoal,
+        isOwnGoal
+      })
+    }
+
+    // Caso 2: Gol del rival (nunca tiene dorsal)
+    if (side === 'opponent') {
+      const eventTitle = isOwnGoal ? '⛔ Gol en propia rival' : '⚽ Gol rival'
+      
+      setGoals([...goals, { 
+        time: `${minutes} : ${seconds}`, 
+        side, 
+        id: idForGoal,
+        isOwnGoal
+      }])
+      
+      addEvent({ 
+        title: eventTitle, 
+        type: 'goal', 
+        id: idForGoal,
+        isOwnGoal
       })
     }
   }

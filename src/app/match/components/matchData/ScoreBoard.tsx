@@ -7,8 +7,14 @@ export default function ScoreBoard() {
   const opponentName = 'Boca Juniors'
   const isHome = true // Example value, replace with actual logic
 
-  const teamGoals = matchGoals.filter(goal => goal.side === 'team')
-  const opponentGoals = matchGoals.filter(goal => goal.side === 'opponent')
+const teamGoals = matchGoals.filter(goal => 
+  (goal.side === 'team' && !goal.isOwnGoal) || 
+  (goal.side === 'opponent' && goal.isOwnGoal)
+)
+const opponentGoals = matchGoals.filter(goal => 
+  (goal.side === 'opponent' && !goal.isOwnGoal) || 
+  (goal.side === 'team' && goal.isOwnGoal)
+)
 
   const Goals = (side: 'team' | 'opponent') => {
     const isTeam = side === 'team'

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -7,238 +8,196 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from '@/components/ui/dialog'
 
 import usePlayerMenu from '@/app/hooks/playerMenu/usePlayerMenu'
-import { useEffect, useState } from 'react'
 import useMatchStoreSelectors from '@/app/hooks/data/useMatchStoreSelectors'
-import ChangeDialog from './ChangeDialog'
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import SubstitutionDialog from '../../dialogs/SubstitutionDialog'
+import RedToGoalKeeperDialog from '../../dialogs/RedToGoalKeeperDialog'
 import DorsalForMenu from './DorsalForMenu'
 import PlayerStopwatch from './PlayerStopwatch'
-import RedToGoalKeeperDialog from './RedToGoalKeeperDialog'
+
+type DialogState = 'none' | 'change' | 'playerMenu' | 'redToGK'
 
 export default function PlayerMenu({ dorsal }: { dorsal: number }) {
-
-  const { handlersPlayer, player, } = usePlayerMenu(dorsal)
+  const { handlersPlayer, player } = usePlayerMenu(dorsal)
   const { matchTeam } = useMatchStoreSelectors()
+  const p = player(dorsal)  // evita repetir llamadas
+
   const [playerColor, setPlayerColor] = useState('bg-blue-800 rounded-full w-[36px] h-[36px]')
-  const [showChangeDialog, setShowChangeDialog] = useState(false)
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [showRedToGoalKeeperDialog, setShowRedToGoalKeeperDialog] = useState(false)
+  const [dialogState, setDialogState] = useState<DialogState>('none')
 
-  const handleChangeFromPlaying = () => {
-    setShowChangeDialog(true)
-    setIsDialogOpen(false)
-  }
+  // Actualiza color según tarjeta / lesión
+  useEffect(() => {
+    const base = 'rounded-full w-[36px] h-[36px]'
+    let color = 'bg-blue-800'
+    if (p?.card === 'yellow') color = 'bg-yellow-500 text-black'
+    if (p?.card === 'red') color = 'bg-red-600'
+    const injured = p?.isInjured ? ' border-red-400 border-2' : ''
+    setPlayerColor(`${color} ${base}${injured}`)
+  }, [p, matchTeam])
 
+  // Cierra cualquier diálogo y ejecuta acción
   const handleActionAndClose = (action: () => void) => {
     action()
-    setIsDialogOpen(false)
+    setDialogState('none')
   }
 
-  useEffect(() => {
+  // Render expulsado
+  if (p?.card === 'red') {
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button className={playerColor}>{dorsal}</Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-56" align="start">
+          <DropdownMenuGroup>
+            <DropdownMenuLabel className="font-bold italic">
+              {p.name ? `${p.name} (#${dorsal})` : `Player ${dorsal}`}
+            </DropdownMenuLabel>
+            {p.isInjured && (
+              <DropdownMenuLabel className="text-red-400">Lesionado</DropdownMenuLabel>
+            )}
+            <DropdownMenuLabel className="text-white font-bold bg-red-600">
+              Jugador expulsado
+            </DropdownMenuLabel>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
+  }
 
-    const p = player(dorsal)
-    const handlePlayerColor = () => {
-    
-      const constants = ' rounded-full w-[36px] h-[36px]'
-      if (!p?.card) return 'bg-blue-800' + constants
-      if (p.card === 'yellow') return 'bg-yellow-500 text-black' + constants
-      if (p.card === 'red') return 'bg-red-600' + constants
-      return 'bg-blue-800' + constants
-    }
-
-    const isInjured = ' border-red-400 border-2'
-    const newColor = handlePlayerColor() + (p?.isInjured ? isInjured : '')
-    setPlayerColor(newColor)
-
-  }, [dorsal, player, matchTeam])
-
-  if (player(dorsal)?.card === 'red') return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button className={playerColor}>
+  // Render suplente
+  if (!p?.isPlaying) {
+    return (
+      <>
+        <Button className={playerColor} onClick={() => setDialogState('change')}>
           {dorsal}
         </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="start">
-        <DropdownMenuGroup>
-          <DropdownMenuLabel className='font-bold  italic'>
-            {player(dorsal)?.name + `(#${dorsal})` || 'Player ' + dorsal}
-          </DropdownMenuLabel>
-          {player(dorsal)?.isInjured &&
-            <DropdownMenuLabel className='text-red-400'>
-              Lesionado
-            </DropdownMenuLabel>
+        <SubstitutionDialog
+          open={dialogState === 'change'}
+          onCancel={() => setDialogState('none')}
+          onOpenChange={() => setDialogState('none')}
+          dorsal={dorsal}
+        />
+      </>
+    )
+  }
+
+  // Items del menú
+  const menuItems: Array<
+    | { type: 'button'; label: string; callback: () => void; className?: string }
+    | { type: 'separator' }
+  > = [
+      { type: 'button', label: '⚽ GOL !!', callback: () => handlersPlayer.handleGoal({ dorsal, side: 'team' }), className: 'bg-green-800' },
+      { type: 'separator' },
+      ...(p?.isGoalKeeper
+        ? [{ type: 'button' as const, label: '🧤 Parada', callback: () => handlersPlayer.handleKeeperSave(dorsal) }]
+        : []),
+      { type: 'button', label: '🏹 Disparo', callback: () => handlersPlayer.handleShot(dorsal) },
+      { type: 'button', label: '🔄 Salir al banquillo', callback: () => setDialogState('change'), className: 'bg-blue-900' },
+      { type: 'separator' },
+      { type: 'button', label: '🤕 Lesión', callback: () => handleActionAndClose(() => handlersPlayer.handleInjury(dorsal)), className: 'bg-slate-700' },
+      { type: 'button', label: '🚫 Falta', callback: () => handleActionAndClose(() => handlersPlayer.handleFoul(dorsal)), className: 'bg-slate-700' },
+      ...(!p?.card
+        ? [{ type: 'button' as const, label: '🟨 Tarjeta Amarilla', callback: () => handleActionAndClose(() => handlersPlayer.handleCard(dorsal, 'yellow')), className: 'bg-slate-700' }]
+        : []),
+      {
+        type: 'button',
+        label: '🟥 Tarjeta Roja',
+        callback: () => {
+          if (p?.isGoalKeeper) {
+            setDialogState('none')
+            setTimeout(() => setDialogState('redToGK'), 100)
+          } else {
+            handleActionAndClose(() => handlersPlayer.handleCard(dorsal, 'red'))
           }
-          <DropdownMenuLabel className='text-white font-bold bg-red-600'>
-            Jugador expulsado
-          </DropdownMenuLabel>
+        },
+        className: 'bg-slate-700',
+      },
+      {
+        type: 'button',
+        label: '⛔ Gol en propia',
+        callback: () => handlersPlayer.handleGoal({ dorsal, side: 'team', isOwnGoal: true }),
+        className: 'bg-slate-700',
+      }
+    ]
 
-        </DropdownMenuGroup>
-
-      </DropdownMenuContent>
-    </DropdownMenu >
-  )
-
-  if (!player(dorsal)?.isPlaying) return (
-    <>
-      <Button
-        onClick={() => setShowChangeDialog(true)}
-        className={playerColor}
-      >{dorsal}
-      </Button>
-      <ChangeDialog
-        open={showChangeDialog}
-        onCancel={() => setShowChangeDialog(false)}
-        onOpenChange={() => setShowChangeDialog(false)}
-        dorsal={dorsal}
-      />
-    </>
-  )
-
-
+  // Render jugador en cancha
   return (
     <>
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <Dialog
+        open={dialogState === 'playerMenu'}
+        onOpenChange={(open) => !open && setDialogState('none')}
+      >
         <DialogTrigger asChild>
-          <Button className={playerColor}>
+          <Button className={playerColor} onClick={() => setDialogState('playerMenu')}>
             {dorsal}
           </Button>
         </DialogTrigger>
 
-          <DialogContent>
-            <DialogHeader>
-
-              <DialogTitle className='flex flex-row justify-center items-center gap-2'>
-                <span>
-                  {DorsalForMenu(player(dorsal))}
-                </span>
-                <span>
-                  {player(dorsal)?.name || 'Player ' + dorsal}
-                </span>
-                {/* {player(dorsal) && <DorsalForMenu player={player(dorsal)} />} */}
-              </DialogTitle>
-
-              {player(dorsal)?.card === 'yellow' &&
-                <span className='text-black font-bold bg-yellow-500'>
-                  Amonestado
-                </span>}
-              {player(dorsal)?.isInjured &&
-                <DialogTitle className='text-red-400'>
-                  Lesionado
-                </DialogTitle>
-              }
-
-              <DialogDescription>
-              </DialogDescription>
-
-              <div className='flex flex-row gap-1 justify-center'>
-                Tiempo Jugado
-                <PlayerStopwatch dorsal={dorsal} />
-              </div>
-            </DialogHeader>
-            <div className='flex flex-col gap-1'>
-
-              <>
-                <Button
-                  className='bg-green-800'
-                  onClick={() => handleActionAndClose(() => handlersPlayer.handleGoal({ dorsal, side: 'team' }))}
-                >
-                  ⚽ GOL !!
-                </Button>
-                <DropdownMenuSeparator />
-
-              </>
-              {player(dorsal)?.isGoalKeeper &&
-                <>
-                  <Button
-                    onClick={() => handleActionAndClose(() => handlersPlayer.handleKeeperSave(dorsal))}
-                  >
-                    🧤 Parada
-                  </Button>
-                </>
-              }
-
-              <>
-                <Button
-                  onClick={() => handleActionAndClose(() => handlersPlayer.handleShot(dorsal))}
-                >
-                  🏹 Disparo
-                </Button>
-                {/* <DropdownMenuSeparator /> */}
-                <Button
-                  onClick={handleChangeFromPlaying}
-                  className='bg-blue-900'
-                >
-                  🔄 Salir al banquillo
-                </Button>
-
-                <DropdownMenuSeparator />
-                <Button
-                  onClick={() => handleActionAndClose(() => handlersPlayer.handleInjury(dorsal))}
-                  className='bg-slate-700'
-                >
-                  🤕 Lesión
-                </Button>
-
-                <Button
-                  onClick={() => handleActionAndClose(() => handlersPlayer.handleFoul(dorsal))}
-                  className='bg-slate-700'
-                >
-                  🚫 Falta
-                </Button>
-
-                {player(dorsal)?.card !== 'yellow' &&
-                  <Button
-                    onClick={() => handleActionAndClose(() => handlersPlayer.handleCard(dorsal, 'yellow'))}
-                    className='bg-slate-700'
-                  >
-                    🟨 Tarjeta Amarilla
-                  </Button>
-                }
-                <Button
-                  onClick={() => {
-                    if (player(dorsal)?.isGoalKeeper) {
-                      setIsDialogOpen(false)
-                      setShowRedToGoalKeeperDialog(true)
-                      return
-                    }
-                    handleActionAndClose(() => handlersPlayer.handleCard(dorsal, 'red'))
-                  }}
-                  className='bg-slate-700'
-                >
-                  🟥 Tarjeta Roja
-                </Button>
-                {/* <DropdownMenuSeparator /> */}
-              </>
-
-
-
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex justify-center items-center gap-2">
+              <span>{DorsalForMenu(p)}</span>
+              <span>{p.name || `Player ${dorsal}`}</span>
+            </DialogTitle>
+            {p.card === 'yellow' && (
+              <span className="text-black font-bold bg-yellow-500">Amonestado</span>
+            )}
+            {p.isInjured && (
+              <DialogTitle className="text-red-400">Lesionado</DialogTitle>
+            )}
+            <DialogDescription />
+            <div className="flex justify-center gap-1">
+              Tiempo Jugado <PlayerStopwatch dorsal={dorsal} />
             </div>
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button variant={'destructive'}>
-                  Cancelar
-                </Button>
-              </DialogClose>
-            </DialogFooter>
-          </DialogContent>
+          </DialogHeader>
 
+          <div className="flex flex-col gap-1">
+            {menuItems.map((item, idx) =>
+              item.type === 'separator' ? (
+                <DropdownMenuSeparator key={`sep-${idx}`} />
+              ) : (
+                <Button
+                  key={`btn-${idx}`}
+                  className={item.className}
+                  onClick={() => handleActionAndClose(item.callback)}
+                >
+                  {item.label}
+                </Button>
+              )
+            )}
+          </div>
+
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="destructive">Cancelar</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
       </Dialog>
 
-      <ChangeDialog
-        open={showChangeDialog}
-        onCancel={() => setShowChangeDialog(false)}
-        onOpenChange={() => setShowChangeDialog(false)}
+      <SubstitutionDialog
+        open={dialogState === 'change'}
+        onCancel={() => setDialogState('none')}
+        onOpenChange={() => setDialogState('none')}
         dorsal={dorsal}
       />
 
       <RedToGoalKeeperDialog
-        open={showRedToGoalKeeperDialog}
-        onCancel={() => setShowRedToGoalKeeperDialog(false)}
-        onOpenChange={() => setShowRedToGoalKeeperDialog(false)}
+        open={dialogState === 'redToGK'}
+        onCancel={() => setDialogState('none')}
+        onOpenChange={() => setDialogState('none')}
         dorsal={dorsal}
       />
     </>
