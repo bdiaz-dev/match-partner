@@ -53,6 +53,12 @@ interface MatchState {
   setIsHalfTime: (isHalfTime: boolean) => void
   isSecondTime: boolean
   setIsSecondTime: (isSecondTime: boolean) => void
+  matchLongTime: number
+  setMatchLongTime: (matchTime: number) => void
+  extraTimeFirstHalf?: number
+  extraTimeSecondHalf?: number
+  setExtraTimeFirstHalf?: (extraTime: number) => void
+  setExtraTimeSecondHalf?: (extraTime: number) => void
   matchTeam: Array<MatchPlayer>
   setMatchTeam: (matchTeam: Array<MatchPlayer>) => void
   events: Array<MatchEvent>
@@ -85,6 +91,14 @@ const useMatchStore = create<MatchState>()(
       
       isSecondTime: false,
       setIsSecondTime: (isSecondTime) => set({ isSecondTime }),
+
+      matchLongTime: 90,
+      setMatchLongTime: (matchLongTime) => set({ matchLongTime }),
+
+      extraTimeFirstHalf: undefined,
+      setExtraTimeFirstHalf: (extraTime) => set({ extraTimeFirstHalf: extraTime }),
+      extraTimeSecondHalf: undefined,
+      setExtraTimeSecondHalf: (extraTime) => set({ extraTimeSecondHalf: extraTime }),
 
       matchTeam: [],
       setMatchTeam: (matchTeam) => set({ matchTeam }),
@@ -123,6 +137,9 @@ const useMatchStore = create<MatchState>()(
           isPaused: false,
           isHalfTime: false,
           isSecondTime: false,
+          matchLongTime: 90,
+          extraTimeFirstHalf: undefined,
+          extraTimeSecondHalf: undefined,
           pausePeriods: [],
           matchTeam: [],
           events: [],

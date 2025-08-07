@@ -1,3 +1,4 @@
+import { match } from 'assert'
 import useMatchStore from '../../match/stores/matchStore'
 
 export default function useMatchStoreSelectors() {
@@ -19,6 +20,12 @@ export default function useMatchStoreSelectors() {
     isHalfTime: useMatchStore(state => state.isHalfTime),
     setIsHalfTime: useMatchStore(state => state.setIsHalfTime),
     isSecondTime: useMatchStore(state => state.isSecondTime),
+    matchLongTime: useMatchStore(state => state.matchLongTime),
+    setMatchLongTime: useMatchStore(state => state.setMatchLongTime),
+    extraTimeFirstHalf: useMatchStore(state => state.extraTimeFirstHalf),
+    setExtraTimeFirstHalf: useMatchStore(state => state.setExtraTimeFirstHalf),
+    extraTimeSecondHalf: useMatchStore(state => state.extraTimeSecondHalf),
+    setExtraTimeSecondHalf: useMatchStore(state => state.setExtraTimeSecondHalf),
     setIsSecondTime: useMatchStore(state => state.setIsSecondTime),
     startPause: useMatchStore(state => state.startPause),
     endPause: useMatchStore(state => state.endPause),
