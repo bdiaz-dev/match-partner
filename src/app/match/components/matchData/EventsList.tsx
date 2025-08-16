@@ -83,9 +83,12 @@ export default function EventsList() {
                   >
                     ❌
                   </button>}
-                <span className={`${getEventsColors(!event.isOwnGoal ? event.type : 'ownGoal', (!!event.playerName ? 'team' : 'opponent'))} font-semibold`}>{event.title + ': '}</span>
+                <span className={`${getEventsColors(!event.isOwnGoal ? event.type : 'ownGoal', (!!event.playerName ? 'team' : 'opponent'))} font-semibold`}>{event.title + (event.type !== 'startSecondTime' ? ': ' : '')}</span>
                 <span className='text-gray-600'>{event.playerName} {event.playerName ? `(#${event.playerDorsal})` : ''}</span>
-                <span className='text-gray-500 text-sm text-nowrap'>{' - ' + event.time}</span>
+                
+                {event.type === 'startSecondTime' || (
+                  <span className='text-gray-500 text-sm text-nowrap'>{' - ' + event.time}</span>
+                )}
               </div>
             ))
           ) : (

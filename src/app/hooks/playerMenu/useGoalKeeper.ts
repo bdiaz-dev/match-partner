@@ -1,15 +1,16 @@
 import { MatchEvent, MatchPlayer } from '../../match/stores/matchStore'
+import useMatchStoreSelectors from '../data/useMatchStoreSelectors'
 import { usePlayerEvents } from './usePlayerEvents'
 
-export function useGoalKeeper(
-  matchTeam: MatchPlayer[] | null,
-  setMatchTeam: (team: MatchPlayer[]) => void,
-  startTime: string | null,
-  pausePeriods: { start: string; id: string, end?: string }[],
-  events: MatchEvent[],
-  setEvents: (events: MatchEvent[]) => void
-) {
-  const { addMultipleEvents } = usePlayerEvents(startTime, pausePeriods, events, setEvents)
+export function useGoalKeeper() {
+
+  const {
+    matchTeam,
+    setMatchTeam,
+    startTime,
+  } = useMatchStoreSelectors()
+
+  const { addMultipleEvents } = usePlayerEvents()
   
   const setAsGoalKeeper = ({ dorsal, playerToRemove, playerToRedCard }: {
     dorsal: number,

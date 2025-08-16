@@ -17,13 +17,13 @@ export default function useGeneralEventButtons({
     setShowHalfTimeDialog,
     setShowEndMatchDialog,
     setShowPlayerSelectorForKeeperSave,
-    isSecondTime,
+    isSecondHalf,
 }: {
     handlers: Handlers;
     setShowHalfTimeDialog: (v: boolean) => void;
     setShowEndMatchDialog: (v: boolean) => void;
     setShowPlayerSelectorForKeeperSave: (v: boolean) => void;
-    isSecondTime: boolean;
+    isSecondHalf: boolean;
 }) {
 
     const opponentEventsButtons = [
@@ -46,7 +46,7 @@ export default function useGeneralEventButtons({
     const matchEventButtons = [
         {
             label: '⌚ Media parte',
-            condition: !isSecondTime,
+            condition: !isSecondHalf,
             callback: () => setShowHalfTimeDialog(true),
         },
         {

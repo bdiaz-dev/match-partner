@@ -1,13 +1,26 @@
 import { MatchEvent } from '../../match/stores/matchStore'
-import { getElapsedWithPauses } from '../../utils/getElapsedWithPauses'
 import { toast } from 'sonner'
+import useMatchStoreSelectors from '../data/useMatchStoreSelectors';
+import useTimeStringForEvents from '../events/useTimeStringForEvents';
+import { useMatchElapsedTime } from '../stopwatch/useMatchElapsedTime';
 
-export function usePlayerEvents(startTime: string | null, pausePeriods: { start: string; id: string, end?: string }[], events: MatchEvent[], setEvents: (events: MatchEvent[]) => void) {
+export function usePlayerEvents() {
+  
+  const {
+    events,
+    setEvents,
+  } = useMatchStoreSelectors()
+
+  const {
+minutes,
+seconds,
+  } = useMatchElapsedTime()
+
+  const { time : timeString } = useTimeStringForEvents()
+
   const addEvent = (event: Omit<MatchEvent, 'id' | 'time'> & { id?: string, time?: string }) => {
-    if (!startTime) return
-    const { minutes, seconds } = getElapsedWithPauses(startTime, pausePeriods)
     const id = event.id ?? `${event.type}-${minutes}-${seconds}`
-    const time = event.time ?? `${minutes} : ${seconds}`
+    const time = event.time ?? timeString({ minutes, seconds })
     const newEvent: MatchEvent = { ...event, id, time }
     if (newEvent.type === 'substitution' && newEvent.playersOnSubstitution) {
       const playersText = newEvent.playersOnSubstitution
@@ -26,12 +39,9 @@ export function usePlayerEvents(startTime: string | null, pausePeriods: { start:
   }
 
   const addMultipleEvents = (eventsToAdd: (Omit<MatchEvent, 'id' | 'time'> & { id?: string, time?: string })[]) => {
-    if (!startTime || eventsToAdd.length === 0) return
-
-    const { minutes, seconds } = getElapsedWithPauses(startTime, pausePeriods)
     const processedEvents = eventsToAdd.map((event, index) => {
       const id = event.id ?? `${event.type}-${minutes}-${seconds}-${index}`
-      const time = event.time ?? `${minutes} : ${seconds}`
+      const time = event.time ?? timeString({ minutes, seconds })
       return { ...event, id, time }
     })
     processedEvents.map(e => {

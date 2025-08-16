@@ -1,4 +1,3 @@
-// utils/getElapsedWithPauses.ts
 export function getElapsedWithPauses(
   startTime: string,
   pausePeriods: { start: string; end?: string }[],
