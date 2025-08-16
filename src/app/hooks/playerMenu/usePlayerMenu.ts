@@ -1,35 +1,32 @@
 import { GoalItem, MatchPlayer } from '@/app/match/stores/matchStore'
-import { getElapsedWithPauses } from '@/app/utils/getElapsedWithPauses'
 import useMatchStoreSelectors from '../data/useMatchStoreSelectors'
 import { usePlayerActions } from './usePlayerActions'
 import { usePlayerEvents } from './usePlayerEvents'
 import { useGoalKeeper } from './useGoalKeeper'
+import { useMatchElapsedTime } from '../stopwatch/useMatchElapsedTime'
 
 export default function usePlayerMenu(dorsal: number | undefined) {
   const {
     matchTeam,
     setMatchTeam,
-    events,
-    setEvents,
     goals,
     setGoals,
-    pausePeriods,
     startTime
   } = useMatchStoreSelectors()
 
-  const { addEvent } = usePlayerEvents(startTime, pausePeriods, events, setEvents)
-  const { findPlayer, togglePlayerStatus, handleCard, handleSimpleEvent } = usePlayerActions(
-    matchTeam, setMatchTeam, startTime, pausePeriods, events, setEvents
-  )
-  const { setAsGoalKeeper } = useGoalKeeper(
-    matchTeam, setMatchTeam, startTime, pausePeriods, events, setEvents
-  )
+  const {
+    minutes,
+    seconds,
+  } = useMatchElapsedTime()
+
+  const { addEvent } = usePlayerEvents()
+  const { findPlayer, togglePlayerStatus, handleCard, handleSimpleEvent } = usePlayerActions()
+  const { setAsGoalKeeper } = useGoalKeeper()
 
   // Funciones específicas usando los hooks base
-const handleGoal = ({ dorsal, side, isOwnGoal = false }: { dorsal: number | undefined, side: 'team' | 'opponent', isOwnGoal?: boolean }) => {
+  const handleGoal = ({ dorsal, side, isOwnGoal = false }: { dorsal: number | undefined, side: 'team' | 'opponent', isOwnGoal?: boolean }) => {
     if (!matchTeam || !startTime) return
-    
-    const { minutes, seconds } = getElapsedWithPauses(startTime, pausePeriods)
+
     const idForGoal = `goal-${side}-${minutes}-${seconds}`
 
     // Caso 1: Gol de nuestro equipo (requiere dorsal)
@@ -53,12 +50,12 @@ const handleGoal = ({ dorsal, side, isOwnGoal = false }: { dorsal: number | unde
         id: idForGoal,
         isOwnGoal
       }
-      
+
       setGoals([...goals, newGoal])
-      
+
       // Determinar el título del evento basado en si es gol en propia
       const eventTitle = isOwnGoal ? '⛔ Gol en propia' : '⚽ Gol equipo'
-      
+
       addEvent({
         title: eventTitle,
         type: 'goal',
@@ -72,17 +69,17 @@ const handleGoal = ({ dorsal, side, isOwnGoal = false }: { dorsal: number | unde
     // Caso 2: Gol del rival (nunca tiene dorsal)
     if (side === 'opponent') {
       const eventTitle = isOwnGoal ? '⛔ Gol en propia rival' : '⚽ Gol rival'
-      
-      setGoals([...goals, { 
-        time: `${minutes} : ${seconds}`, 
-        side, 
+
+      setGoals([...goals, {
+        time: `${minutes} : ${seconds}`,
+        side,
         id: idForGoal,
         isOwnGoal
       }])
-      
-      addEvent({ 
-        title: eventTitle, 
-        type: 'goal', 
+
+      addEvent({
+        title: eventTitle,
+        type: 'goal',
         id: idForGoal,
         isOwnGoal
       })
@@ -92,11 +89,11 @@ const handleGoal = ({ dorsal, side, isOwnGoal = false }: { dorsal: number | unde
   const toggleSubstitution = (dorsal1: number, dorsal2: number) => {
     if (!matchTeam || !startTime) return
 
-    const isSomeOneGoalKeeper = matchTeam.some((player : MatchPlayer) =>
+    const isSomeOneGoalKeeper = matchTeam.some((player: MatchPlayer) =>
       (player.dorsal === dorsal1 || player.dorsal === dorsal2) && player.isGoalKeeper
     )
 
-    const updatedTeam = matchTeam.map((player : MatchPlayer) => {
+    const updatedTeam = matchTeam.map((player: MatchPlayer) => {
       if (player.dorsal === dorsal1 || player.dorsal === dorsal2) {
         const isEntering = !player.isPlaying
         return {
@@ -126,9 +123,9 @@ const handleGoal = ({ dorsal, side, isOwnGoal = false }: { dorsal: number | unde
 
   const handleInjury = (dorsal: number) => {
     if (!matchTeam || !startTime) return
-    
+
     handleSimpleEvent(dorsal, { title: '🤕 Lesión', type: 'injury' })
-    
+
     const updatedTeam = matchTeam.map((player: MatchPlayer) => {
       if (player.dorsal === dorsal) {
         return { ...player, isInjured: true }
@@ -142,12 +139,12 @@ const handleGoal = ({ dorsal, side, isOwnGoal = false }: { dorsal: number | unde
   const filterPlayersForSubstitution = () => {
     if (!matchTeam || dorsal === undefined) return []
     const bool = findPlayer(dorsal)?.isPlaying ? false : true
-    return matchTeam?.filter((p : MatchPlayer) => p.dorsal !== dorsal && p.isPlaying === bool && p.card !== 'red') || []
+    return matchTeam?.filter((p: MatchPlayer) => p.dorsal !== dorsal && p.isPlaying === bool && p.card !== 'red') || []
   }
 
   const filterPlayersForRedToGoalKeeper = () => {
     if (!matchTeam || dorsal === undefined) return []
-    return matchTeam?.filter((p : MatchPlayer) => p.dorsal !== dorsal && p.card !== 'red') || []
+    return matchTeam?.filter((p: MatchPlayer) => p.dorsal !== dorsal && p.card !== 'red') || []
   }
 
   // Funciones simples usando handleSimpleEvent

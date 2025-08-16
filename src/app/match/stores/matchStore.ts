@@ -43,16 +43,32 @@ export type MatchEvent = {
 }
 
 interface MatchState {
+  isHome: boolean
+  setIsHome: (isHome: boolean) => void
   startTime: string | null
   setStartTime: (time: string) => void
+  secondHalfStartTime: string | null
+  setSecondHalfStartTime: (time: string) => void
   isStarted: boolean
   setIsStarted: (isStarted: boolean) => void
   isPaused: boolean
   setIsPaused: (isPaused: boolean) => void
   isHalfTime: boolean
   setIsHalfTime: (isHalfTime: boolean) => void
-  isSecondTime: boolean
-  setIsSecondTime: (isSecondTime: boolean) => void
+  isSecondHalf: boolean
+  setisSecondHalf: (isSecondHalf: boolean) => void
+  matchLongTime: number
+  setMatchLongTime: (matchTime: number) => void
+  isExtraTime: boolean
+  setIsExtraTime: (isExtraTime: boolean) => void
+  extraTimeFirstHalf?: number
+  extraTimeSecondHalf?: number
+  setExtraTimeFirstHalf: (extraTime: number) => void
+  setExtraTimeSecondHalf: (extraTime: number) => void
+  stopwatchMinutes?: number
+  stopwatchSeconds?: number
+  setStopwatchMinutes?: (minutes: number) => void
+  setStopwatchSeconds?: (seconds: number) => void
   matchTeam: Array<MatchPlayer>
   setMatchTeam: (matchTeam: Array<MatchPlayer>) => void
   events: Array<MatchEvent>
@@ -62,8 +78,8 @@ interface MatchState {
 
   archiveMatch: () => void
 
-  pausePeriods: Array<{ start: string; id: string, end?: string }>
-  setPausePeriods: (pausePeriods: Array<{ start: string; id: string, end?: string }>) => void
+  pausePeriods: Array<{ start: string; id: string, end?: string, moment?: 'secondHalf' | 'firstHalf' | 'halfTime' }>
+  setPausePeriods: (pausePeriods: Array<{ start: string; id: string, end?: string, moment?: 'secondHalf' | 'firstHalf' | 'halfTime' }>) => void
   startPause: (now: string) => void
   endPause: () => void
 }
@@ -71,8 +87,14 @@ interface MatchState {
 const useMatchStore = create<MatchState>()(
   persist(
     (set, get) => ({
+      isHome: true,
+      setIsHome: (isHome) => set({ isHome }),
+
       startTime: null,
       setStartTime: (time) => set({ startTime: time }),
+
+      secondHalfStartTime: null,
+      setSecondHalfStartTime: (time) => set({ secondHalfStartTime: time }),
 
       isStarted: false,
       setIsStarted: (isStarted) => set({ isStarted }),
@@ -80,11 +102,27 @@ const useMatchStore = create<MatchState>()(
       isPaused: false,
       setIsPaused: (isPaused) => set({ isPaused }),
 
+      stopwatchMinutes: 0,
+      setStopwatchMinutes: (minutes) => set({ stopwatchMinutes: minutes }),
+      stopwatchSeconds: 0,
+      setStopwatchSeconds: (seconds) => set({ stopwatchSeconds: seconds }),
+
       isHalfTime: false,
       setIsHalfTime: (isHalfTime) => set({ isHalfTime }),
       
-      isSecondTime: false,
-      setIsSecondTime: (isSecondTime) => set({ isSecondTime }),
+      isSecondHalf: false,
+      setisSecondHalf: (isSecondHalf) => set({ isSecondHalf }),
+
+      matchLongTime: 90,
+      setMatchLongTime: (matchLongTime) => set({ matchLongTime }),
+
+      isExtraTime: false,
+      setIsExtraTime: (isExtraTime) => set({ isExtraTime }),
+
+      extraTimeFirstHalf: undefined,
+      setExtraTimeFirstHalf: (extraTime) => set({ extraTimeFirstHalf: extraTime }),
+      extraTimeSecondHalf: undefined,
+      setExtraTimeSecondHalf: (extraTime) => set({ extraTimeSecondHalf: extraTime }),
 
       matchTeam: [],
       setMatchTeam: (matchTeam) => set({ matchTeam }),
@@ -96,8 +134,9 @@ const useMatchStore = create<MatchState>()(
       setPausePeriods: (pausePeriods) => set({ pausePeriods }),
       startPause: (now) =>
         // const now = new Date().toISOString()
+        
         set(state => ({
-          pausePeriods: [...state.pausePeriods, { start: now, id: now }],
+          pausePeriods: [...state.pausePeriods, { start: now, id: now, moment: state.isSecondHalf ? 'secondHalf' : state.isHalfTime ? 'halfTime' : 'firstHalf' }],
           isPaused: true
         })),
       endPause: () => set(state => ({
@@ -118,11 +157,16 @@ const useMatchStore = create<MatchState>()(
         localStorage.removeItem('match-storage');
 
         set({
+          isHome: true,
           startTime: null,
+          secondHalfStartTime: null,
           isStarted: false,
           isPaused: false,
           isHalfTime: false,
-          isSecondTime: false,
+          isSecondHalf: false,
+          matchLongTime: 90,
+          extraTimeFirstHalf: undefined,
+          extraTimeSecondHalf: undefined,
           pausePeriods: [],
           matchTeam: [],
           events: [],

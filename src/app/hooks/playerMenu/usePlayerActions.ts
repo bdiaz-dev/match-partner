@@ -1,16 +1,17 @@
 import { MatchEvent } from '@/app/match/stores/matchStore'
-import { MatchPlayer } from '../../match/stores/matchStore'
 import { usePlayerEvents } from './usePlayerEvents'
+import useMatchStoreSelectors from '../data/useMatchStoreSelectors'
 
-export function usePlayerActions(
-  matchTeam: MatchPlayer[] | null,
-  setMatchTeam: (team: MatchPlayer[]) => void,
-  startTime: string | null,
-  pausePeriods: { start: string; id: string, end?: string }[],
-  events: MatchEvent[],
-  setEvents: (events: MatchEvent[]) => void
-) {
-  const { addEvent } = usePlayerEvents(startTime, pausePeriods, events, setEvents)
+export function usePlayerActions() {
+
+  const {
+    startTime,
+    setMatchTeam,
+    matchTeam
+  } = useMatchStoreSelectors()
+  
+
+  const { addEvent } = usePlayerEvents()
   
   const findPlayer = (dorsal: number) => matchTeam?.find(player => player.dorsal === dorsal)
 

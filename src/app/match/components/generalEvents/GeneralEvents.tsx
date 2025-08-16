@@ -14,7 +14,7 @@ export default function GeneralEvents() {
     isPaused,
     archiveMatch,
     isHalfTime,
-    isSecondTime
+    isSecondHalf
   } = useMatchStoreSelectors()
 
   const [showHalfTimeDialog, setShowHalfTimeDialog] = useState(false)
@@ -30,7 +30,7 @@ export default function GeneralEvents() {
     setShowHalfTimeDialog,
     setShowEndMatchDialog,
     setShowPlayerSelectorForKeeperSave,
-    isSecondTime,
+    isSecondHalf,
   })
 
   // Estados de pausa
@@ -42,7 +42,7 @@ export default function GeneralEvents() {
     )
   }
 
-  if (isPaused && isHalfTime && !isSecondTime) {
+  if (isPaused && isHalfTime && !isSecondHalf) {
     return (
       <Button className='bg-green-600' onClick={() => handlers.handleHalfTimeEnd()}>
         Empezar segunda parte

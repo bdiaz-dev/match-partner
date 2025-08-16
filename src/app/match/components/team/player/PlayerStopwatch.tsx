@@ -7,11 +7,6 @@ import { getElapsedWithPauses } from '@/app/utils/getElapsedWithPauses'
 import useMatchStoreSelectors from '@/app/hooks/data/useMatchStoreSelectors'
 
 export default function PlayerStopwatch({ dorsal, style = 'default' }: { dorsal: number, style?: 'default' | 'forChange' }) {
-  // const matchTeam = useMatchStore(state => state.matchTeam)
-  // const setMatchTeam = useMatchStore(state => state.setMatchTeam)
-  // const isStarted = useMatchStore(state => state.isStarted)
-  // const isPaused = useMatchStore(state => state.isPaused)
-  // const pausePeriods = useMatchStore(state => state.pausePeriods)
   const {matchTeam, setMatchTeam, isStarted, isPaused, pausePeriods} = useMatchStoreSelectors()
   const hasHydrated = useMatchStore.persist.hasHydrated();
   const [startTimestamp, setStartTimestamp] = useState<number | undefined>(undefined)
@@ -31,7 +26,6 @@ export default function PlayerStopwatch({ dorsal, style = 'default' }: { dorsal:
 
   // Entrar al campo
   useEffect(() => {
-    // if (!hasHydrated) return;
     if (isStarted && player?.isPlaying && !player.lastStartTime) {
       updatePlayer({ lastStartTime: new Date().toISOString() })
     }
@@ -76,6 +70,9 @@ export default function PlayerStopwatch({ dorsal, style = 'default' }: { dorsal:
     setStartTimestamp(startTimestamp)
   }, [currentTime, isPaused])
   
+  useEffect(() => {
+    console.log(startTimestamp, 'startTimestamp')
+  }, [startTimestamp])
 
   if (!player) return null;
 

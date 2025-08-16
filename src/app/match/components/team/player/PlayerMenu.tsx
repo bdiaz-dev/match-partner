@@ -98,12 +98,12 @@ export default function PlayerMenu({ dorsal }: { dorsal: number }) {
     | { type: 'button'; label: string; callback: () => void; className?: string }
     | { type: 'separator' }
   > = [
-      { type: 'button', label: '⚽ GOL !!', callback: () => handlersPlayer.handleGoal({ dorsal, side: 'team' }), className: 'bg-green-800' },
+      { type: 'button', label: '⚽ GOL !!', callback: () => handleActionAndClose(() => handlersPlayer.handleGoal({ dorsal, side: 'team' })), className: 'bg-green-800' },
       { type: 'separator' },
       ...(p?.isGoalKeeper
-        ? [{ type: 'button' as const, label: '🧤 Parada', callback: () => handlersPlayer.handleKeeperSave(dorsal) }]
+        ? [{ type: 'button' as const, label: '🧤 Parada', callback: () => handleActionAndClose(() => handlersPlayer.handleKeeperSave(dorsal)) }]
         : []),
-      { type: 'button', label: '🏹 Disparo', callback: () => handlersPlayer.handleShot(dorsal) },
+      { type: 'button', label: '🏹 Disparo', callback: () => handleActionAndClose(() => handlersPlayer.handleShot(dorsal)) },
       { type: 'button', label: '🔄 Salir al banquillo', callback: () => setDialogState('change'), className: 'bg-blue-900' },
       { type: 'separator' },
       { type: 'button', label: '🤕 Lesión', callback: () => handleActionAndClose(() => handlersPlayer.handleInjury(dorsal)), className: 'bg-slate-700' },
@@ -132,7 +132,6 @@ export default function PlayerMenu({ dorsal }: { dorsal: number }) {
       }
     ]
 
-  // Render jugador en cancha
   return (
     <>
       <Dialog
@@ -171,7 +170,7 @@ export default function PlayerMenu({ dorsal }: { dorsal: number }) {
                 <Button
                   key={`btn-${idx}`}
                   className={item.className}
-                  onClick={() => handleActionAndClose(item.callback)}
+                  onClick={item.callback}
                 >
                   {item.label}
                 </Button>
